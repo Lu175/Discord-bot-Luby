@@ -22,17 +22,20 @@ class ReplyQuotes(commands.Cog):
 
     @commands.Cog.listener()
     async def on_message(self, message):
-        replied_msg = await FLU.get_replied_msg(bot=self.bot, message=message)
-        if replied_msg:
-            if Luby_ctrl.REPLY_QUOTE and (replied_msg.author == self.bot.user):
-                reply_str = f'`오늘도 빛나는 {message.author.display_name}님, 파이팅입니다 !!`\n'
-                if self.LAST_QUOTE:  # if it is not None
-                    while self.LAST_QUOTE == self.CURR_QUOTE:
+        if message.author == self.bot.user:
+            return
+        else:
+            replied_msg = await FLU.get_replied_msg(bot=self.bot, message=message)
+            if replied_msg:
+                if Luby_ctrl.REPLY_QUOTE and (replied_msg.author == self.bot.user):
+                    reply_str = f'`오늘도 빛나는 {message.author.display_name}님, 파이팅입니다 !!`\n'
+                    if self.LAST_QUOTE:  # if it is not None
+                        while self.LAST_QUOTE == self.CURR_QUOTE:
+                            self.CURR_QUOTE = rnd.randint(0, len(self.QUOTES) -1)
+                    else:
                         self.CURR_QUOTE = rnd.randint(0, len(self.QUOTES) -1)
-                else:
-                    self.CURR_QUOTE = rnd.randint(0, len(self.QUOTES) -1)
-                quote_str = self.QUOTES[self.CURR_QUOTE]
-                await message.reply(reply_str + quote_str, mention_author=True)
+                    quote_str = self.QUOTES[self.CURR_QUOTE]
+                    await message.reply(reply_str + quote_str, mention_author=True)
 
 
 def setup(bot):

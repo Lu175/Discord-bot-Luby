@@ -15,7 +15,7 @@ class ShowHelp(commands.Cog):
             "Lu": ("./board", "./card_test", "./test", "./c_test")
         }
 
-    @commands.group(aliases=['help', 'HELP'])
+    @commands.group(name='help')
     async def help_group(self, ctx):
         if ctx.invoked_subcommand is None:
             embed_help = discord.Embed(title=f"네, {str(ctx.author)[:-5]}님!\n무엇을 도와드릴까요?",
