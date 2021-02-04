@@ -27,7 +27,13 @@ class ReleaseLog(commands.Cog):
                 embed_Emoji.set_author(name=message.author.display_name, icon_url=message.author.avatar_url)
                 await message.delete()
                 if replied_msg is not None:
-                    await replied_msg.reply(embed=embed_Emoji)
+                    if replied_msg.embeds is not None:
+                        if replied_msg.embeds[0].author != self.bot.user:
+                            embed_author_id = replied_msg.embeds[0].author.icon_url.split('/')[4]
+                            await message.channel.send(f'<@!{embed_author_id}>\n')
+                            await message.channel.send(embed=embed_Emoji)
+                    else:
+                        await replied_msg.reply(embed=embed_Emoji)
                 else:
                     await message.channel.send(embed=embed_Emoji)
 
