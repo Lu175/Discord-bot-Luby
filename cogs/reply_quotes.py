@@ -8,6 +8,7 @@ import random as rnd
 class ReplyQuotes(commands.Cog):
     def __init__(self, bot):
         self.bot = bot
+        self.zoomEmojiEmbedFlag = False
         self.CURR_QUOTE = None
         self.LAST_QUOTE = None
         self.QUOTES = [
@@ -27,7 +28,10 @@ class ReplyQuotes(commands.Cog):
         else:
             replied_msg = await FLU.get_replied_msg(bot=self.bot, message=message)
             if replied_msg:
-                if Luby_ctrl.REPLY_QUOTE and (replied_msg.author == self.bot.user):
+                if replied_msg.embeds is not None:
+                    if replied_msg.embeds[0].author != self.bot.user:
+                        self.zoomEmojiEmbedFlag = True
+                if Luby_ctrl.REPLY_QUOTE and (replied_msg.author == self.bot.user) and (not self.zoomEmojiEmbedFlag):
                     reply_str = f'`오늘도 빛나는 {message.author.display_name}님, 파이팅입니다 !!`\n'
                     if self.LAST_QUOTE:  # if it is not None
                         while self.LAST_QUOTE == self.CURR_QUOTE:
