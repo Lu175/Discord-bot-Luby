@@ -60,19 +60,32 @@ Emoji_OmokBoard_dict = {
                         '7': ':seven:',
                         '8': ':eight:',
                         '9': ':nine:',
-                        'q': ':keycap_ten:',
-                        'w': '<:eleven:799094009419005962>',
-                        'e': '<:twelve:799094008893931571>',
-                        'r': '<:thirteen:799094008949243924>',
+                        'r': ':keycap_ten:',
+                        's': '<:eleven:799094009419005962>',
+                        't': '<:twelve:799094008893931571>',
+                        'u': '<:thirteen:799094008949243924>',
+                        'a': ' 🇦',
+                        'b': ' 🇧',
+                        'c': ' 🇨',
+                        'd': ' 🇩',
+                        'e': ' 🇪',
+                        'f': ' 🇫',
+                        'g': ' 🇬',
+                        'h': ' 🇭',
+                        'i': ' 🇮',
+                        'j': ' 🇯',
+                        'k': ' 🇰',
+                        'l': ' 🇱',
+                        'm': ' 🇲',
                         '-': '<:BLANK:798862760909602836>',
                         # '=': '◻',
                         '=': '⬜',
                         # '!': '<:gray_medium_square:798893536312295454>',
                         '!': '<:gray_large_square:798889465979994122>',
-                        'a': '🔴',
-                        'A': '<:omok_red_highlight:799324992818118716>',
-                        'b': '🟢',
-                        'B': '<:omok_green_highlight:799324954822705152>'}
+                        'p': '🔴',
+                        'P': '<:omok_red_highlight:799324992818118716>',
+                        'q': '🟢',
+                        'Q': '<:omok_green_highlight:799324954822705152>'}
 
 
 async def Omok_help(ctx):
@@ -165,7 +178,7 @@ r=============
                 pass
         embed_board = discord.Embed(colour=Luby_color)
         if current_player is not None:
-            embed_board.add_field(name=f'{Emoji_OmokBoard_dict[chr(current_player+65)]} Player {current_player +1}님의 입력:  '
+            embed_board.add_field(name=f'{Emoji_OmokBoard_dict[chr(current_player+80)]} Player {current_player +1}님의 입력:  '
                                        f'[ {input_coordinate[0]}, {input_coordinate[1]} ]',
                                   value=f'{BLANK}',
                                   inline=False)
