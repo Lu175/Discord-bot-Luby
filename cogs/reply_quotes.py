@@ -28,7 +28,7 @@ class ReplyQuotes(commands.Cog):
         else:
             replied_msg = await FLU.get_replied_msg(bot=self.bot, message=message)
             if replied_msg:
-                if replied_msg.embeds is not None:
+                if replied_msg.embeds:
                     if replied_msg.embeds[0].author != self.bot.user:
                         self.zoomEmojiEmbedFlag = True
                 if Luby_ctrl.REPLY_QUOTE and (replied_msg.author == self.bot.user) and (not self.zoomEmojiEmbedFlag):
@@ -40,6 +40,7 @@ class ReplyQuotes(commands.Cog):
                         self.CURR_QUOTE = rnd.randint(0, len(self.QUOTES) -1)
                     quote_str = self.QUOTES[self.CURR_QUOTE]
                     await message.reply(reply_str + quote_str, mention_author=True)
+            self.zoomEmojiEmbedFlag = False
 
 
 def setup(bot):
