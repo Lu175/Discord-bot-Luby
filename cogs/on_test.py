@@ -91,7 +91,7 @@ class Testing(commands.Cog):
                                     url='https://www.google.com',
                                     description='Description')
             embed_0.set_thumbnail(url='https://lu175.com/pic/HaNyang_PNG-34.png')
-            embed_0.add_field(name='name', value='value', inline=False)
+            embed_0.add_field(name='name', value=' 🇦 🇧 🇨 🇩 🇪 🇫 🇬 🇭 🇮 🇯 🇰 🇱 🇲', inline=False)
             if ctx.message.reference is not None:
                 replied_msg = await self.bot.get_channel(ctx.message.reference.channel_id).fetch_message(ctx.message.reference.message_id)
                 embed_0.add_field(name='replied_msg.content', value=replied_msg.content, inline=False)
