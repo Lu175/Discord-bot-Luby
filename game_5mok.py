@@ -13,36 +13,36 @@ def is_reply_msg(message):
 
 async def _play_Omok(Bot, ctx, OMOK_CHANNEL_ID):
     default_GameBoard_13x13 = """\
--123456789qwer
-1=============
-2=============
-3=============
-4===!=====!===
-5=============
-6=============
-7======!======
-8=============
-9=============
-q===!=====!===
-w=============
+-123456789rstu
+a=============
+b=============
+c=============
+d=============
 e=============
-r=============
+f=============
+g=============
+h=============
+i=============
+j=============
+k=============
+l=============
+m=============
 """
     playing_GameBoard_13x13 = """\
--123456789qwer
-1=============
-2=============
-3=============
-4===!=====!===
-5=============
-6=============
-7======!======
-8=============
-9=============
-q===!=====!===
-w=============
+-123456789rstu
+a=============
+b=============
+c=============
+d===!=====!===
 e=============
-r=============
+f=============
+g======!======
+h=============
+i=============
+j===!=====!===
+k=============
+l=============
+m=============
 """
 
     # Message collection
@@ -57,8 +57,8 @@ r=============
     ary_player = np.zeros((2, Board_row, Board_col), dtype=int)
 
     # String for stone
-    p_curr_str = ['A', 'B']
-    p_past_str = ['a', 'b']
+    p_curr_str = ['P', 'Q']
+    p_past_str = ['p', 'q']
     p_stone = ['🔴', '🟢']
 
     # Input
@@ -73,7 +73,10 @@ r=============
     GAME_END = False
     GG_FLAG = False
     TIME = 10.0
-    MATCHED_INPUT = None
+    MATCHED_INPUT_1 = None
+    MATCHED_INPUT_1c = None
+    MATCHED_INPUT_2 = None
+    MATCHED_INPUT_2c = None
     OMOK_TURN_COUNT = 0
 
     # Show blank
@@ -135,12 +138,33 @@ r=============
                         msg_buf_input_K = []
 
                     if replied_msg.author == Bot.user:
+                        # RESET
+                        MATCHED_INPUT_1 = None
+                        MATCHED_INPUT_1c = None
+                        MATCHED_INPUT_2 = None
+                        MATCHED_INPUT_2c = None
                         p_input[curr_player] = input_msg.content
                         await input_msg.delete()
                         p_input[curr_player] = p_input[curr_player].strip()
-                        Regex = re.compile(' *\d{1,2} *, *\d{1,2} *')
-                        MATCHED_INPUT = Regex.match(p_input[curr_player])
-                        if MATCHED_INPUT:
+                        # 영어 숫자
+                        Regex_1 = re.compile(' *[a-mA-M] *\d{1,2} *')
+                        if Regex_1.match(p_input[curr_player]):
+                            MATCHED_INPUT_1 = True
+                            break
+                        # 영어, 숫자
+                        Regex_1c = re.compile(' *[a-mA-M] *, *\d{1,2} *')
+                        if Regex_1c.match(p_input[curr_player]):
+                            MATCHED_INPUT_1c = True
+                            break
+                        # 숫자 영어
+                        Regex_2 = re.compile(' *\d{1,2} *[a-mA-M] *')
+                        if Regex_2.match(p_input[curr_player]):
+                            MATCHED_INPUT_2 = True
+                            break
+                        # 숫자, 영어
+                        Regex_2c = re.compile(' *\d{1,2} *, *[a-mA-M] *')
+                        if Regex_2c.match(p_input[curr_player]):
+                            MATCHED_INPUT_2c = True
                             break
                         else:
                             if right_coordinate_K is not None:
@@ -148,7 +172,7 @@ r=============
                             right_coordinate_K = await ctx.send('좌표를 제대로 입력해주세요! `X,Y` (1 ~ 13)')
                             continue
 
-                if MATCHED_INPUT or GG_FLAG:  # GG ~~~~
+                if (MATCHED_INPUT_1 or MATCHED_INPUT_1c or MATCHED_INPUT_2 or MATCHED_INPUT_2c) or GG_FLAG:  # GG ~~~~
                     break
 
             if GG_FLAG:  # GG ~~~~
@@ -160,18 +184,41 @@ r=============
                     pass
                 else:
                     coordinate_buf += char
-            p_coordinate[curr_player] = coordinate_buf.split(',')
-            ROW_input = int(p_coordinate[curr_player][0]) -1
-            COL_input = int(p_coordinate[curr_player][1]) -1
-            if (ROW_input in range(Board_row)) and (COL_input in range(Board_col)) and (ary_Board_TF[ROW_input, COL_input]):
-                ary_player[curr_player, ROW_input, COL_input] = 1
-                ary_Board_TF[ROW_input, COL_input] = False
-                break
-            else:
-                if another_coordinate_K is not None:
-                    await another_coordinate_K.delete()
-                another_coordinate_K = await ctx.send('다른 좌표를 입력해주세요!')
-                continue
+            # 문자 숫자
+            if MATCHED_INPUT_1:
+                p_coordinate[curr_player] = [coordinate_buf[0], coordinate_buf[1:]]
+            # 숫자 문자
+            if MATCHED_INPUT_2:
+                p_coordinate[curr_player] = [coordinate_buf[0:-1], coordinate_buf[-1]]
+            # 문자, 숫자 OR 숫자, 문자
+            elif MATCHED_INPUT_1c or MATCHED_INPUT_2c:
+                p_coordinate[curr_player] = coordinate_buf.split(',')
+            # ROW, COL  # 문자 숫자 OR 문자, 숫자
+            if MATCHED_INPUT_1 or MATCHED_INPUT_1c:
+                ROW_input = ord(p_coordinate[curr_player][0].upper()) - ord('A')
+                COL_input = int(p_coordinate[curr_player][1]) -1
+                if (ROW_input in range(Board_row)) and (COL_input in range(Board_col)) and (ary_Board_TF[ROW_input, COL_input]):
+                    ary_player[curr_player, ROW_input, COL_input] = 1
+                    ary_Board_TF[ROW_input, COL_input] = False
+                    break
+                else:
+                    if another_coordinate_K is not None:
+                        await another_coordinate_K.delete()
+                    another_coordinate_K = await ctx.send('다른 좌표를 입력해주세요!')
+                    continue
+            # COL, ROW  # 숫자 문자 OR 숫자, 문자
+            elif MATCHED_INPUT_2 or MATCHED_INPUT_2c:
+                ROW_input = ord(p_coordinate[curr_player][1].upper()) - ord('A')
+                COL_input = int(p_coordinate[curr_player][0]) -1
+                if (ROW_input in range(Board_row)) and (COL_input in range(Board_col)) and (ary_Board_TF[ROW_input, COL_input]):
+                    ary_player[curr_player, ROW_input, COL_input] = 1
+                    ary_Board_TF[ROW_input, COL_input] = False
+                    break
+                else:
+                    if another_coordinate_K is not None:
+                        await another_coordinate_K.delete()
+                    another_coordinate_K = await ctx.send('다른 좌표를 입력해주세요!')
+                    continue
 
         if right_coordinate_K is not None:
             await right_coordinate_K.delete()
@@ -194,8 +241,8 @@ r=============
 
         # Reflect input on Board
 
-        renewed_Board_Buf = '-123456789qwer\n'
-        row_index = '123456789qwer'
+        renewed_Board_Buf = '-123456789rstu\n'
+        row_index = 'abcdefghijklm'
         draw_count = 14
         for row in range(Board_row):
             renewed_Board_Buf += row_index[row]
