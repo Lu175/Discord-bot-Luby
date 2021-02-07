@@ -127,7 +127,7 @@ u=============
                         MATCHED_INPUT_1c = None
                         MATCHED_INPUT_2 = None
                         MATCHED_INPUT_2c = None
-                        p_input[curr_player] = input_msg.content
+                        p_input[curr_player] = input_msg.content.upper()
                         await input_msg.delete()
                         p_input[curr_player] = p_input[curr_player].strip()
                         # 영어 숫자
@@ -179,7 +179,7 @@ u=============
                 p_coordinate[curr_player] = coordinate_buf.split(',')
             # ROW, COL  # 문자 숫자 OR 문자, 숫자
             if MATCHED_INPUT_1 or MATCHED_INPUT_1c:
-                COL_input = ord(p_coordinate[curr_player][0].upper()) - ord('A')
+                COL_input = ord(p_coordinate[curr_player][0]) - ord('A')
                 ROW_input = int(p_coordinate[curr_player][1]) -1
                 if (ROW_input in range(Board_row)) and (COL_input in range(Board_col)) and (ary_Board_TF[ROW_input, COL_input]):
                     ary_player[curr_player, ROW_input, COL_input] = 1
@@ -192,7 +192,7 @@ u=============
                     continue
             # COL, ROW  # 숫자 문자 OR 숫자, 문자
             elif MATCHED_INPUT_2 or MATCHED_INPUT_2c:
-                COL_input = ord(p_coordinate[curr_player][1].upper()) - ord('A')
+                COL_input = ord(p_coordinate[curr_player][1]) - ord('A')
                 ROW_input = int(p_coordinate[curr_player][0]) -1
                 if (ROW_input in range(Board_row)) and (COL_input in range(Board_col)) and (ary_Board_TF[ROW_input, COL_input]):
                     ary_player[curr_player, ROW_input, COL_input] = 1
