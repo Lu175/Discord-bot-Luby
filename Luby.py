@@ -64,23 +64,21 @@ Emoji_OmokBoard_dict = {
                         's': '<:eleven:799094009419005962>',
                         't': '<:twelve:799094008893931571>',
                         'u': '<:thirteen:799094008949243924>',
-                        'a': ' 🇦',
-                        'b': ' 🇧',
-                        'c': ' 🇨',
-                        'd': ' 🇩',
-                        'e': ' 🇪',
-                        'f': ' 🇫',
-                        'g': ' 🇬',
-                        'h': ' 🇭',
-                        'i': ' 🇮',
-                        'j': ' 🇯',
-                        'k': ' 🇰',
-                        'l': ' 🇱',
-                        'm': ' 🇲',
+                        'a': ':regional_indicator_a:',
+                        'b': ':regional_indicator_b:',
+                        'c': ':regional_indicator_c:',
+                        'd': ':regional_indicator_d:',
+                        'e': ':regional_indicator_e:',
+                        'f': ':regional_indicator_f:',
+                        'g': ':regional_indicator_g:',
+                        'h': ':regional_indicator_h:',
+                        'i': ':regional_indicator_i:',
+                        'j': ':regional_indicator_j:',
+                        'k': ':regional_indicator_k:',
+                        'l': ':regional_indicator_l:',
+                        'm': ':regional_indicator_m:',
                         '-': '<:BLANK:798862760909602836>',
-                        # '=': '◻',
                         '=': '⬜',
-                        # '!': '<:gray_medium_square:798893536312295454>',
                         '!': '<:gray_large_square:798889465979994122>',
                         'p': '🔴',
                         'P': '<:omok_red_highlight:799324992818118716>',
@@ -149,20 +147,20 @@ async def play_Omok(ctx):
 @Luby.command(name='board')
 async def show_OmokBoard(ctx, board=None, current_player=None, input_coordinate=None):
     GameBoard_13x13 = """\
--123456789rstu
-a=============
-b=============
-c=============
-d=============
-e=============
-f=============
-g=============
-h=============
-i=============
-j=============
-k=============
-l=============
-m=============
+-abcdefghijklm
+1=============
+2=============
+3=============
+4=============
+5=============
+6=============
+7=============
+8=============
+9=============
+r=============
+s=============
+t=============
+u=============
 """
     if board is None:
         board = GameBoard_13x13
