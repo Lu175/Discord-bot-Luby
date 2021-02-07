@@ -225,8 +225,8 @@ u=============
 
         # Reflect input on Board
 
-        renewed_Board_Buf = '-123456789rstu\n'
-        row_index = 'abcdefghijklm'
+        renewed_Board_Buf = '-abcdefghijklm\n'
+        row_index = '123456789rstu'
         draw_count = 14
         for row in range(Board_row):
             renewed_Board_Buf += row_index[row]
