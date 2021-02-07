@@ -1,0 +1,13 @@
+.idea/
+__pycache__/
+cogs/__pycache__/
+
+*.txt
+!twemoji_fileName.txt
+
+# log file
+*.out
+
+# util files
+replace_Tpath.py
+test3.py
