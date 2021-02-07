@@ -18,7 +18,7 @@ print("Luby_path: " + Luby_info.Luby_path)
 
 
 # Load Emoji list
-f1 = open("C:/Users/jaehy/Desktop/# Lu-175/# Programming/Discord Bot/Luby/twemoji_fileName.txt", 'r', encoding='utf-8')
+f1 = open("C:/Users/jaehy/Desktop/# Lu-175/# Programming/Discord Bot/Discord-bot-Luby/twemoji_fileName.txt", 'r', encoding='utf-8')
 unicodeEmoji = f1.read().split('\n')
 f1.close()
 unicodeEmoji.pop()
@@ -207,7 +207,7 @@ if __name__ == "__main__":
 
     # RUN
 
-    f = open('C:/Users/jaehy/Desktop/# Lu-175/# Programming/Discord Bot/Luby/Luby_token.txt', 'r')
+    f = open('C:/Users/jaehy/Desktop/# Lu-175/# Programming/Discord Bot/Discord-bot-Luby/Luby_token.txt', 'r')
     Luby_token = f.readline()
     f.close()
     Luby.run(Luby_token)
