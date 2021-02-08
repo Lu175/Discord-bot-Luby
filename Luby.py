@@ -51,57 +51,77 @@ async def on_message(message):
 
 # Emoji for OmokBoard
 Emoji_OmokBoard_dict = {
-                        '1': ':one:',
-                        '2': ':two:',
-                        '3': ':three:',
-                        '4': ':four:',
-                        '5': ':five:',
-                        '6': ':six:',
-                        '7': ':seven:',
-                        '8': ':eight:',
-                        '9': ':nine:',
-                        'r': ':keycap_ten:',
-                        's': '<:eleven:799094009419005962>',
-                        't': '<:twelve:799094008893931571>',
-                        'u': '<:thirteen:799094008949243924>',
-                        'a': ':regional_indicator_a:',
-                        'b': ':regional_indicator_b:',
-                        'c': ':regional_indicator_c:',
-                        'd': ':regional_indicator_d:',
-                        'e': ':regional_indicator_e:',
-                        'f': ':regional_indicator_f:',
-                        'g': ':regional_indicator_g:',
-                        'h': ':regional_indicator_h:',
-                        'i': ':regional_indicator_i:',
-                        'j': ':regional_indicator_j:',
-                        'k': ':regional_indicator_k:',
-                        'l': ':regional_indicator_l:',
-                        'm': ':regional_indicator_m:',
-                        '-': '<:BLANK:798862760909602836>',
-                        '=': '⬜',
-                        '!': '<:gray_large_square:798889465979994122>',
-                        'p': '🔴',
-                        'P': '<:omok_red_highlight:799324992818118716>',
-                        'q': '🟢',
-                        'Q': '<:omok_green_highlight:799324954822705152>'}
+    '1': ':one:',
+    '2': ':two:',
+    '3': ':three:',
+    '4': ':four:',
+    '5': ':five:',
+    '6': ':six:',
+    '7': ':seven:',
+    '8': ':eight:',
+    '9': ':nine:',
+    'r': ':keycap_ten:',
+    's': '<:eleven:799094009419005962>',
+    't': '<:twelve:799094008893931571>',
+    'u': '<:thirteen:799094008949243924>',
+    'a': ':regional_indicator_a:',
+    'b': ':regional_indicator_b:',
+    'c': ':regional_indicator_c:',
+    'd': ':regional_indicator_d:',
+    'e': ':regional_indicator_e:',
+    'f': ':regional_indicator_f:',
+    'g': ':regional_indicator_g:',
+    'h': ':regional_indicator_h:',
+    'i': ':regional_indicator_i:',
+    'j': ':regional_indicator_j:',
+    'k': ':regional_indicator_k:',
+    'l': ':regional_indicator_l:',
+    'm': ':regional_indicator_m:',
+    '-': '<:BLANK:798862760909602836>',
+    '=': '⬜',
+    '!': '<:gray_large_square:798889465979994122>',
+    'p': '🔴',
+    'P': '<:omok_red_highlight:799324992818118716>',
+    'q': '🟢',
+    'Q': '<:omok_green_highlight:799324954822705152>'}
 
 
 async def Omok_help(ctx):
     if ctx.author.id == int(eeLu175_id):
-        embed_5mok_help = discord.Embed(title='오목 게임 매뉴얼!',
-                                        colour=Luby_color)
-        embed_5mok_help.set_image(url='https://lu175.com/pic/omok_help.png')
-        embed_5mok_help.add_field(name='좌표 입력하기 (1 ~ 13)', value='`행,열`의 내용으로 루비에게 `답장하기`', inline=False)
-        embed_5mok_help.add_field(name='기권하기', value='`GG` 또는 `gg`의 내용으로 루비에게 `답장하기`', inline=False)
+        embed_5mok_help = discord.Embed(title='🔴 오목 게임 매뉴얼! 🟢',
+                                        colour=Luby_color,
+                                        discription='아래의 내용으로 루비에게 `답장`해주세요 !')
+        blank_board = await ctx.invoke(Luby.get_command('board'), show_help=True)
+        embed_5mok_help.add_field(name='📕 좌표 입력하기 (`답장`)', value=BLANK + '`영문숫자`, `영문,숫자`, `숫자영문`, `숫자,영문`\n' + BLANK + '공백 추가 가능, 영문 대소문자 모두 가능',
+                                  inline=False)
+        embed_5mok_help.add_field(name='📙 좌표 입력예시', value=BLANK + '`g7`, `G,7`, `7G`, `7, g`\n' + BLANK + '(위의 입력은 모en 같은 위치를 나타냄)', inline=False)
+        embed_5mok_help.add_field(name='📗 기권하기 (`답장`)', value=BLANK + '`GG` 또는 `gg`', inline=False)
+        embed_5mok_help.add_field(name='📘 게임 보드 상태',
+                                  value=f'{blank_board}',
+                                  inline=False)
         embed_5mok_help.set_footer(text=Luby_footer)
         await ctx.send(embed=embed_5mok_help)
+
 
 @Luby.command(name='omok')
 async def play_Omok(ctx):
     def is_replyMsg_on_OMOK_CHANNEL(message):
         return (message.channel.id == Luby_ctrl.OMOK_CHANNEL_ID) and (message.reference is not None)
 
+    def is_Msg_on_OMOK_CHANNEL(message):
+        return message.channel.id == Luby_ctrl.OMOK_CHANNEL_ID
+
+    def get_user_id_from_mention(message):
+        Regex = re.compile(r'<@!\d{18}>')
+        matched_msg = Regex.fullmatch(message.content)
+        print(matched_msg)
+        if matched_msg:
+            return message.content[3:-1]  # return user.id
+        else:
+            return False
+
     TIME_OUT = 60.0  # sec
+    OUT_FLAG = False
 
     if isinstance(ctx.channel, discord.channel.DMChannel):
         pass
@@ -113,9 +133,9 @@ async def play_Omok(ctx):
 
         if Luby_ctrl.REPLY_QUOTE:
             Luby_ctrl.REPLY_QUOTE = False
-            await ctx.send("`오목 게임 모드`\n다음 중 `원하는 명령어`를 입력 후 루비에게 `답장` 부탁드려요!")
-            await ctx.send("```help: 오목 게임 방법\nplay: 오목 시작\nexit: 게임 모드 종료\n```")
             while True:
+                await ctx.send("`오목 게임 모드`\n다음 중 `원하는 명령어`를 입력 후 루비에게 `답장` 부탁드려요!")
+                await ctx.send("```help: 오목 게임 방법\nplay 1: AI와 오목 두기\nplay 2: 사람과 오목두기\nexit: 게임 모드 종료\n```")
                 try:
                     cmd_msg = await Luby.wait_for("message", check=is_replyMsg_on_OMOK_CHANNEL, timeout=TIME_OUT)
                 except asyncio.TimeoutError:
@@ -123,29 +143,51 @@ async def play_Omok(ctx):
                     Luby_ctrl.REPLY_QUOTE = True
                     break
 
-                replied_msg = await FLU.get_replied_msg(bot=Luby, message=cmd_msg)
-                if (replied_msg.channel.id == Luby_ctrl.OMOK_CHANNEL_ID) and (replied_msg.author == Luby.user):
-                    if cmd_msg.content == 'help':
-                        await Omok_help(ctx)
-                    elif cmd_msg.content == 'play':
-                        await OM._play_Omok(Luby, ctx, Luby_ctrl.OMOK_CHANNEL_ID)
+                user_command = cmd_msg.content.lower().replace(' ', '')
+                if user_command == 'help':
+                    await Omok_help(ctx)
+                elif user_command == 'play1':
+                    await ctx.send(f'<@!{ctx.author.id}>\t**VS**\t<@!{Luby.user.id}>')
+                    await ctx.send(f'죄송합니다.. 😭😭\n아직 루비가 오목을 배우는 중입니다!')
+                    # await OM._play_Omok(Luby, ctx, Luby_ctrl.OMOK_CHANNEL_ID, Player_1_id=ctx.author.id, Player_2_id=Luby.user.id, AI=True)
+                    break
+                elif user_command == 'play2':
+                    while True:
+                        await ctx.send(f'```누구와 플레이 하실건가요?\n같이 플레이 하고싶은 분을 멘션해주세요!\n(이전 메뉴로 가기: ee)```')
+                        user_command_play2 = await Luby.wait_for("message", check=is_Msg_on_OMOK_CHANNEL, timeout=30)
+                        if user_command_play2.content.lower() == 'ee':
+                            break
+                        called_user_id = get_user_id_from_mention(user_command_play2)
+                        if called_user_id:
+                            await ctx.send(f'<@!{ctx.author.id}>\t**VS**\t<@!{called_user_id}>')
+                            try:
+                                await OM._play_Omok(Luby, ctx, Luby_ctrl.OMOK_CHANNEL_ID, Player_1_id=ctx.author.id, Player_2_id=called_user_id)
+                            except Exception as excep:
+                                await ctx.send(excep)
+                                print(excep)
+                            OUT_FLAG = True
+                            break
+                        else:
+                            continue
+                    if OUT_FLAG:
+                        OUT_FLAG = False
                         break
-                    elif cmd_msg.content == 'exit':
-                        await ctx.send("오목 게임 모드를 `종료`합니다.")
-                        break
-                    await ctx.send("`오목 게임 모드`\n다음 중 `원하는 명령어`를 입력 후 루비에게 `답장` 부탁드려요!")
-                    await ctx.send("```help: 오목 게임 방법\nplay: 오목 시작\nexit: 게임 모드 종료```")
+                elif user_command == 'exit':
+                    await ctx.send("오목 게임 모드를 `종료`합니다.")
+                    break
+                # await ctx.send("`오목 게임 모드`\n다음 중 `원하는 명령어`를 입력 후 루비에게 `답장` 부탁드려요!")
+                # await ctx.send("```help: 오목 게임 방법\nplay 1: AI와 오목 두기\nplay 2: 사람과 오목두기\nexit: 게임 모드 종료\n```")
+
             # END
             Luby_ctrl.REPLY_QUOTE = True
             Luby_ctrl.OMOK_CHANNEL_ID = None
+
         else:
             pass
 
 
-
-
 @Luby.command(name='board')
-async def show_OmokBoard(ctx, board=None, current_player=None, input_coordinate=None):
+async def show_OmokBoard(ctx, board=None, current_player=None, input_coordinate=None, show_help=None):
     GameBoard_13x13 = """\
 -abcdefghijklm
 1=============
@@ -174,20 +216,74 @@ u=============
                 paint_for_send += '\n'
             else:
                 pass
-        embed_board = discord.Embed(colour=Luby_color)
-        if current_player is not None:
-            embed_board.add_field(name=f'{Emoji_OmokBoard_dict[chr(current_player+80)]} Player {current_player +1}님의 입력:  '
-                                       f'[ {input_coordinate[0]}, {input_coordinate[1]} ]',
-                                  value=f'{BLANK}',
+        if show_help is True:
+            return paint_for_send
+        else:
+            embed_board = discord.Embed(colour=Luby_color)
+            if current_player is not None:
+                embed_board.add_field(name=f'{Emoji_OmokBoard_dict[chr(current_player + 80)]} Player {current_player + 1}님의 입력:  '
+                                           f'[ {input_coordinate[0]}, {input_coordinate[1]} ]',
+                                      value=f'{BLANK}',
+                                      inline=False)
+            embed_board.add_field(name='현재 게임 보드 상태',
+                                  value=f'{paint_for_send}',
                                   inline=False)
-        embed_board.add_field(name='현재 게임 보드 상태',
-                              value=f'{paint_for_send}',
-                              inline=False)
-        embed_board.set_footer(text=Luby_footer)
-        if current_player == 0:
-            return await ctx.send(embed=embed_board)
-        else:  # current_player == 1
-            return await ctx.send(embed=embed_board)
+            embed_board.set_footer(text=Luby_footer)
+            if current_player == 0:
+                return await ctx.send(embed=embed_board)
+            else:  # current_player == 1
+                return await ctx.send(embed=embed_board)
+    else:
+        pass
+
+
+@Luby.command(name='board')
+async def show_OmokBoard(ctx, board=None, current_player=None, current_player_id=None, input_coordinate=None, show_help=None):
+    GameBoard_13x13 = """\
+-abcdefghijklm
+1=============
+2=============
+3=============
+4=============
+5=============
+6=============
+7=============
+8=============
+9=============
+r=============
+s=============
+t=============
+u=============
+"""
+    if board is None:
+        board = GameBoard_13x13
+
+    if ctx.author.id in (int(eeLu175_id), int(Luby.user.id)):
+        paint_for_send = ''
+        for char in board:
+            if char in Emoji_OmokBoard_dict.keys():
+                paint_for_send += Emoji_OmokBoard_dict[char]
+            elif char == '\n':
+                paint_for_send += '\n'
+            else:
+                pass
+        if show_help is True:
+            return paint_for_send
+        else:
+            embed_board = discord.Embed(colour=Luby_color)
+            if current_player is not None:
+                embed_board.add_field(name=f'{Emoji_OmokBoard_dict[chr(current_player + 80)]} {Luby.get_user(int(current_player_id)).display_name}님의 입력:  '
+                                           f'[ {input_coordinate[0]}, {input_coordinate[1]} ]',
+                                      value=f'{BLANK}',
+                                      inline=False)
+            embed_board.add_field(name='현재 게임 보드 상태',
+                                  value=f'{paint_for_send}',
+                                  inline=False)
+            embed_board.set_footer(text=Luby_footer)
+            if current_player == 0:
+                return await ctx.send(embed=embed_board)
+            else:  # current_player == 1
+                return await ctx.send(embed=embed_board)
     else:
         pass
 
