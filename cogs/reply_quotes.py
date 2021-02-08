@@ -21,11 +21,25 @@ class ReplyQuotes(commands.Cog):
             '삶을 사는 데는 단 두가지 방법이 있다.\n하나는 기적이 전혀 없다고 여기는 것이고 또 다른 하나는 모든 것이 기적이라고 여기는방식이다.\n–알베르트 아인슈타인'
         ]
 
+    def load_quotes(self):
+        if self.LAST_QUOTE:  # if it is not None
+            while self.LAST_QUOTE == self.CURR_QUOTE:
+                self.CURR_QUOTE = rnd.randint(0, len(self.QUOTES) - 1)
+        else:
+            self.CURR_QUOTE = rnd.randint(0, len(self.QUOTES) - 1)
+        return self.QUOTES[self.CURR_QUOTE]
+
     @commands.Cog.listener()
     async def on_message(self, message):
         if message.author == self.bot.user:
             return
         else:
+            if message.content[:3] == '루비야':
+                reply_str = f'`오늘도 빛나는 {message.author.display_name}님, 파이팅입니다 !!`\n'
+                quote_str = self.load_quotes()
+                await message.reply(reply_str + quote_str, mention_author=True)
+                return
+
             replied_msg = await FLU.get_replied_msg(bot=self.bot, message=message)
             if replied_msg:
                 if replied_msg.embeds:
@@ -33,12 +47,7 @@ class ReplyQuotes(commands.Cog):
                         self.zoomEmojiEmbedFlag = True
                 if Luby_ctrl.REPLY_QUOTE and (replied_msg.author == self.bot.user) and (not self.zoomEmojiEmbedFlag):
                     reply_str = f'`오늘도 빛나는 {message.author.display_name}님, 파이팅입니다 !!`\n'
-                    if self.LAST_QUOTE:  # if it is not None
-                        while self.LAST_QUOTE == self.CURR_QUOTE:
-                            self.CURR_QUOTE = rnd.randint(0, len(self.QUOTES) -1)
-                    else:
-                        self.CURR_QUOTE = rnd.randint(0, len(self.QUOTES) -1)
-                    quote_str = self.QUOTES[self.CURR_QUOTE]
+                    quote_str = self.load_quotes()
                     await message.reply(reply_str + quote_str, mention_author=True)
             self.zoomEmojiEmbedFlag = False
 
