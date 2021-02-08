@@ -187,57 +187,6 @@ async def play_Omok(ctx):
 
 
 @Luby.command(name='board')
-async def show_OmokBoard(ctx, board=None, current_player=None, input_coordinate=None, show_help=None):
-    GameBoard_13x13 = """\
--abcdefghijklm
-1=============
-2=============
-3=============
-4=============
-5=============
-6=============
-7=============
-8=============
-9=============
-r=============
-s=============
-t=============
-u=============
-"""
-    if board is None:
-        board = GameBoard_13x13
-
-    if ctx.author.id in (int(eeLu175_id), int(Luby.user.id)):
-        paint_for_send = ''
-        for char in board:
-            if char in Emoji_OmokBoard_dict.keys():
-                paint_for_send += Emoji_OmokBoard_dict[char]
-            elif char == '\n':
-                paint_for_send += '\n'
-            else:
-                pass
-        if show_help is True:
-            return paint_for_send
-        else:
-            embed_board = discord.Embed(colour=Luby_color)
-            if current_player is not None:
-                embed_board.add_field(name=f'{Emoji_OmokBoard_dict[chr(current_player + 80)]} Player {current_player + 1}님의 입력:  '
-                                           f'[ {input_coordinate[0]}, {input_coordinate[1]} ]',
-                                      value=f'{BLANK}',
-                                      inline=False)
-            embed_board.add_field(name='현재 게임 보드 상태',
-                                  value=f'{paint_for_send}',
-                                  inline=False)
-            embed_board.set_footer(text=Luby_footer)
-            if current_player == 0:
-                return await ctx.send(embed=embed_board)
-            else:  # current_player == 1
-                return await ctx.send(embed=embed_board)
-    else:
-        pass
-
-
-@Luby.command(name='board')
 async def show_OmokBoard(ctx, board=None, current_player=None, current_player_id=None, input_coordinate=None, show_help=None):
     GameBoard_13x13 = """\
 -abcdefghijklm
