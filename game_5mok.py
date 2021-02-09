@@ -64,7 +64,7 @@ u=============
         # Input
         curr_player = 0
         self.curr_p = curr_player
-        prev_player = None
+        prev_player = 1
         ROW_input = None
         COL_input = None
         p_input = ['', '']
@@ -73,7 +73,7 @@ u=============
         # Flags
         GAME_END = False
         GG_FLAG = False
-        TIME = 10.0
+        TIME = 10
         MATCHED_INPUT_1 = None
         MATCHED_INPUT_1c = None
         MATCHED_INPUT_2 = None

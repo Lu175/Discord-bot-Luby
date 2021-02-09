@@ -163,8 +163,9 @@ async def play_Omok(ctx):
                             try:
                                 A_game = OM.game_Omok()
                                 await A_game._play_Omok(bot=Luby, ctx=ctx, OMOK_CHANNEL_ID=Luby_ctrl.OMOK_CHANNEL_ID, Player_1_id=ctx.author.id, Player_2_id=called_user_id)
-                            except e:
-                                await ctx.send(e)
+                            except Exception as e1:
+                                error_msg = "ERROR: " + str(e1)
+                                await ctx.send(error_msg)
                             OUT_FLAG = True
                             break
                         else:
@@ -175,8 +176,6 @@ async def play_Omok(ctx):
                 elif user_command == 'exit':
                     await ctx.send("오목 게임 모드를 `종료`합니다.")
                     break
-                # await ctx.send("`오목 게임 모드`\n다음 중 `원하는 명령어`를 입력 후 루비에게 `답장` 부탁드려요!")
-                # await ctx.send("```help: 오목 게임 방법\nplay 1: AI와 오목 두기\nplay 2: 사람과 오목두기\nexit: 게임 모드 종료\n```")
 
             # END
             Luby_ctrl.REPLY_QUOTE = True
