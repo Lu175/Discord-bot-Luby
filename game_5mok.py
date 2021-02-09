@@ -82,7 +82,7 @@ u=============
         while True:  # Loop for Not available coordinate
             while True:  # Loop for Not available input
                 while True:  # Loop for Get input from reply
-                    input_K = await ctx.send(f'{p_stone[curr_player] *2} <@!{p_id[curr_player]}>님 차례입니다. {p_stone[curr_player] *2}\n좌표를 입력해주세요!')
+                    input_K = await ctx.send(f'{p_stone[curr_player] * 2} <@!{p_id[curr_player]}>님 차례입니다. {p_stone[curr_player] * 2}\n좌표를 입력해주세요!')
                     msg_buf_input_K.append(input_K)
                     try:
                         left_time_K = await ctx.send("**이번 턴이 60초 남았습니다.**")
@@ -193,7 +193,7 @@ u=============
             # ROW, COL  # 문자 숫자 OR 문자, 숫자
             if MATCHED_INPUT_1 or MATCHED_INPUT_1c:
                 COL_input = ord(p_coordinate[curr_player][0]) - ord('A')
-                ROW_input = int(p_coordinate[curr_player][1]) -1
+                ROW_input = int(p_coordinate[curr_player][1]) - 1
                 if (ROW_input in range(Board_row)) and (COL_input in range(Board_col)) and (ary_Board_TF[ROW_input, COL_input]):
                     ary_player[curr_player, ROW_input, COL_input] = 1
                     ary_Board_TF[ROW_input, COL_input] = False
@@ -206,7 +206,7 @@ u=============
             # COL, ROW  # 숫자 문자 OR 숫자, 문자
             elif MATCHED_INPUT_2 or MATCHED_INPUT_2c:
                 COL_input = ord(p_coordinate[curr_player][1]) - ord('A')
-                ROW_input = int(p_coordinate[curr_player][0]) -1
+                ROW_input = int(p_coordinate[curr_player][0]) - 1
                 if (ROW_input in range(Board_row)) and (COL_input in range(Board_col)) and (ary_Board_TF[ROW_input, COL_input]):
                     ary_player[curr_player, ROW_input, COL_input] = 1
                     ary_Board_TF[ROW_input, COL_input] = False
@@ -267,43 +267,43 @@ u=============
 
         await msg_Board.delete()
         board_K = await ctx.invoke(Bot.get_command("board"),
-                         board=playing_GameBoard_13x13,
-                         current_player=curr_player,
-                         current_player_id=p_id[curr_player],
-                         input_coordinate=p_coordinate[curr_player])
+                                   board=playing_GameBoard_13x13,
+                                   current_player=curr_player,
+                                   current_player_id=p_id[curr_player],
+                                   input_coordinate=p_coordinate[curr_player])
         msg_Board = board_K
 
         # Check 5 series dots [ - ] : Horizontal
 
         for row in range(Board_row):
-            for col in range(Board_col -4):
-                if np.sum(ary_player[curr_player, row, col:col+5]) == 5:
+            for col in range(Board_col - 4):
+                if np.sum(ary_player[curr_player, row, col:col + 5]) == 5:
                     GAME_END = True
 
         # Check 5 series dots [ | ] : Vertical
 
-        for row in range(Board_row -4):
+        for row in range(Board_row - 4):
             for col in range(Board_col):
-                if np.sum(ary_player[curr_player, row:row+5, col]) == 5:
+                if np.sum(ary_player[curr_player, row:row + 5, col]) == 5:
                     GAME_END = True
 
         # Check 5 series dots [ \ ] : Backslash
 
-        for row in range(Board_row -4):
-            for col in range(Board_col -4):
+        for row in range(Board_row - 4):
+            for col in range(Board_col - 4):
                 ele_sum = 0
                 for idx in range(5):
-                    ele_sum += ary_player[curr_player, row+idx, col+idx]
+                    ele_sum += ary_player[curr_player, row + idx, col + idx]
                 if ele_sum == 5:
                     GAME_END = True
 
         # Check 5 series dots [ / ] : Slash
 
-        for row in range(Board_row -4):
+        for row in range(Board_row - 4):
             for col in range(4, Board_col):
                 ele_sum = 0
                 for idx in range(5):
-                    ele_sum += ary_player[curr_player, row+idx, col-idx]
+                    ele_sum += ary_player[curr_player, row + idx, col - idx]
                 if ele_sum == 5:
                     GAME_END = True
 
