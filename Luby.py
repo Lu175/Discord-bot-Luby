@@ -161,7 +161,8 @@ async def play_Omok(ctx):
                         if called_user_id:
                             await ctx.send(f'<@!{ctx.author.id}>\t**VS**\t<@!{called_user_id}>')
                             try:
-                                await OM._play_Omok(Luby, ctx, Luby_ctrl.OMOK_CHANNEL_ID, Player_1_id=ctx.author.id, Player_2_id=called_user_id)
+                                A_game = OM.game_Omok()
+                                await A_game._play_Omok(bot=Luby, ctx=ctx, OMOK_CHANNEL_ID=Luby_ctrl.OMOK_CHANNEL_ID, Player_1_id=ctx.author.id, Player_2_id=called_user_id)
                             except e:
                                 await ctx.send(e)
                             OUT_FLAG = True
