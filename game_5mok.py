@@ -8,6 +8,7 @@ class game_Omok:
     def __init__(self):
         self.Player_id = [0, 0]
         self.curr_p = None
+        self.input_msg = None
 
     async def delete_msg(self, msg_list):
         if msg_list:
@@ -15,7 +16,11 @@ class game_Omok:
                 await msg.delete()
 
     def is_current_player_msg(self, message):
-        return message.author.id == int(self.Player_id[self.curr_p])
+        MATCHED_MSG = False
+        Regex = re.compile(r' *\w{1,2} *,? *\w{1,2} *')
+        if Regex.fullmatch(message.content):
+            MATCHED_MSG = True
+        return MATCHED_MSG and (message.author.id == int(self.Player_id[self.curr_p]))
 
     async def _play_Omok(self, bot, ctx, OMOK_CHANNEL_ID, Player_1_id=None, Player_2_id=None, AI=False):
         default_GameBoard_13x13 = """\
@@ -68,7 +73,6 @@ u=============
         # Flags
         GAME_END = False
         GG_FLAG = False
-        FLAG = None
         TIME = 10.0
         MATCHED_INPUT_1 = None
         MATCHED_INPUT_1c = None
@@ -93,22 +97,22 @@ u=============
                         try:
                             left_time_K = await ctx.send("**이번 턴이 60초 남았습니다.**")
                             msg_buf_timeout_K.append(left_time_K)
-                            input_msg = await bot.wait_for('message', check=self.is_current_player_msg, timeout=30)
+                            self.input_msg = await bot.wait_for('message', check=self.is_current_player_msg, timeout=30)
                         except asyncio.TimeoutError:
                             try:
                                 left_time_K = await ctx.send("**이번 턴이 30초 남았습니다.**")
                                 msg_buf_timeout_K.append(left_time_K)
-                                input_msg = await bot.wait_for('message', check=self.is_current_player_msg, timeout=TIME)
+                                self.input_msg = await bot.wait_for('message', check=self.is_current_player_msg, timeout=TIME)
                             except asyncio.TimeoutError:
                                 try:
                                     left_time_K = await ctx.send("**이번 턴이 20초 남았습니다.**")
                                     msg_buf_timeout_K.append(left_time_K)
-                                    input_msg = await bot.wait_for('message', check=self.is_current_player_msg, timeout=TIME)
+                                    self.input_msg = await bot.wait_for('message', check=self.is_current_player_msg, timeout=TIME)
                                 except asyncio.TimeoutError:
                                     try:
                                         left_time_K = await ctx.send("**이번 턴이 10초 남았습니다.**")
                                         msg_buf_timeout_K.append(left_time_K)
-                                        input_msg = await bot.wait_for('message', check=self.is_current_player_msg, timeout=TIME)
+                                        self.input_msg = await bot.wait_for('message', check=self.is_current_player_msg, timeout=TIME)
                                     except asyncio.TimeoutError:
                                         if msg_buf_timeout_K:
                                             await self.delete_msg(msg_buf_timeout_K)
@@ -125,7 +129,7 @@ u=============
                                             self.curr_p = curr_player
                                         continue
 
-                        if not (input_msg.channel.id == OMOK_CHANNEL_ID):
+                        if not (self.input_msg.channel.id == OMOK_CHANNEL_ID):
                             continue
 
                         if msg_buf_timeout_K:
@@ -135,8 +139,8 @@ u=============
                             await self.delete_msg(msg_buf_input_K)
                             msg_buf_input_K = []
 
-                        if input_msg.author.id == int(p_id[curr_player]):
-                            if input_msg.content.strip().upper() in ('GG'):  # GG ~~~~
+                        if self.input_msg.author.id == int(p_id[curr_player]):
+                            if self.input_msg.content.strip().upper() in ('GG'):  # GG ~~~~
                                 GG_FLAG = True
                                 break
 
@@ -145,8 +149,7 @@ u=============
                             MATCHED_INPUT_1c = None
                             MATCHED_INPUT_2 = None
                             MATCHED_INPUT_2c = None
-                            p_input[curr_player] = input_msg.content.upper()
-                            await input_msg.delete()
+                            p_input[curr_player] = self.input_msg.content.upper()
                             p_input[curr_player] = p_input[curr_player].strip()
                             # 영어 숫자
                             Regex_1 = re.compile(r' *[A-M] *\d{1,2} *')
@@ -177,6 +180,7 @@ u=============
                     if GG_FLAG:  # GG ~~~~
                         break
                     if MATCHED_INPUT_1 or MATCHED_INPUT_1c or MATCHED_INPUT_2 or MATCHED_INPUT_2c:
+                        await self.input_msg.delete()
                         break
 
                 if GG_FLAG:  # GG ~~~~
