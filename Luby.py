@@ -4,6 +4,7 @@ import asyncio
 import os.path
 import Luby_info
 import Luby_ctrl
+import re
 import func_Lu175 as FLU
 import game_5mok as OM
 
@@ -112,13 +113,12 @@ async def play_Omok(ctx):
         return message.channel.id == Luby_ctrl.OMOK_CHANNEL_ID
 
     def get_user_id_from_mention(message):
-        Regex = re.compile(r'<@!\d{18}>')
-        matched_msg = Regex.fullmatch(message.content)
-        print(matched_msg)
-        if matched_msg:
+        Regex_pc = re.compile(r'<@!\d{18}>')
+        Regex_mobile = re.compile(r'<@\d{18}>')
+        if Regex_pc.fullmatch(message.content):
             return message.content[3:-1]  # return user.id
-        else:
-            return False
+        elif Regex_mobile.fullmatch(message.content):
+            return message.content[2:-1]  # return user.id
 
     TIME_OUT = 60.0  # sec
     OUT_FLAG = False
@@ -162,9 +162,8 @@ async def play_Omok(ctx):
                             await ctx.send(f'<@!{ctx.author.id}>\t**VS**\t<@!{called_user_id}>')
                             try:
                                 await OM._play_Omok(Luby, ctx, Luby_ctrl.OMOK_CHANNEL_ID, Player_1_id=ctx.author.id, Player_2_id=called_user_id)
-                            except Exception as excep:
-                                await ctx.send(excep)
-                                print(excep)
+                            except e:
+                                await ctx.send(e)
                             OUT_FLAG = True
                             break
                         else:
