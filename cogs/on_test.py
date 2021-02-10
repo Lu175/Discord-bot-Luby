@@ -90,8 +90,12 @@ class Testing(commands.Cog):
                                     colour=self.Luby_color,
                                     url='https://www.google.com',
                                     description='Description')
-            embed_0.set_thumbnail(url='https://lu175.com/pic/HaNyang_PNG-34.png')
-            embed_0.add_field(name='name', value=' 🇦 🇧 🇨 🇩 🇪 🇫 🇬 🇭 🇮 🇯 🇰 🇱 🇲', inline=False)
+            # embed_0.set_thumbnail(url='https://lu175.com/pic/HaNyang_PNG-34.png')
+            Emoji_URL = "https://cdn.discordapp.com/emojis/808710970439761970.gif?v=1"
+            embed_0.set_thumbnail(url=Emoji_URL)
+            embed_0.add_field(name='alphabet', value=' 🇦 🇧 🇨 🇩 🇪 🇫 🇬 🇭 🇮 🇯 🇰 🇱 🇲', inline=False)
+            embed_0.add_field(name='Loading_Bar_R20s', value='<a:Loading_Bar_R20s:808705256094564363>', inline=False)
+            embed_0.add_field(name='Loading_Bar_RGB60s', value='<a:Loading_Bar_RGB60s:808710970439761970>', inline=False)
             if ctx.message.reference is not None:
                 replied_msg = await self.bot.get_channel(ctx.message.reference.channel_id).fetch_message(ctx.message.reference.message_id)
                 embed_0.add_field(name='replied_msg.content', value=replied_msg.content, inline=False)
