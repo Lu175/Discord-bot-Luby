@@ -147,7 +147,7 @@ async def play_Omok(ctx):
                 if user_command == 'help':
                     await Omok_help(ctx)
                 elif user_command == 'play1':
-                    await ctx.send(f'<@!{ctx.author.id}>\t**VS**\t<@!{Luby.user.id}>')
+                    await ctx.send(f'<@{cmd_msg.author.id}>\t**VS**\t<@{Luby.user.id}>')
                     await ctx.send(f'죄송합니다.. 😭😭\n아직 루비가 오목을 배우는 중입니다!')
                     # await OM._play_Omok(Luby, ctx, Luby_ctrl.OMOK_CHANNEL_ID, Player_1_id=ctx.author.id, Player_2_id=Luby.user.id, AI=True)
                     break
@@ -159,13 +159,14 @@ async def play_Omok(ctx):
                             break
                         called_user_id = get_user_id_from_mention(user_command_play2)
                         if called_user_id:
-                            await ctx.send(f'<@!{ctx.author.id}>\t**VS**\t<@!{called_user_id}>')
+                            await ctx.send(f'<@{user_command_play2.author.id}>\t**VS**\t<@{called_user_id}>')
                             try:
                                 A_game = OM.game_Omok()
-                                await A_game._play_Omok(bot=Luby, ctx=ctx, OMOK_CHANNEL_ID=Luby_ctrl.OMOK_CHANNEL_ID, Player_1_id=ctx.author.id, Player_2_id=called_user_id)
+                                await A_game._play_Omok(bot=Luby, ctx=ctx, OMOK_CHANNEL_ID=Luby_ctrl.OMOK_CHANNEL_ID, Player_1_id=user_command_play2.author.id, Player_2_id=called_user_id)
                             except Exception as e1:
                                 error_msg = "ERROR: " + str(e1)
                                 await ctx.send(error_msg)
+                            del A_game
                             OUT_FLAG = True
                             break
                         else:

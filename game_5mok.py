@@ -7,7 +7,8 @@ from time import time
 class game_Omok:
     def __init__(self):
         self.Player_id = [0, 0]
-        self.curr_p = None
+        self.curr_player = 0
+        self.prev_player = 1
         self.input_msg = None
 
     async def delete_msg(self, msg_list):
@@ -16,11 +17,14 @@ class game_Omok:
                 await msg.delete()
 
     def is_current_player_msg(self, message):
+        input_msg = message.content.upper()
         MATCHED_MSG = False
-        Regex = re.compile(r' *\w{1,2} *,? *\w{1,2} *')
-        if Regex.fullmatch(message.content):
+        Regex_1 = re.compile(r' *[A-M] *,? *\d{1,2} *')
+        Regex_2 = re.compile(r' *\d{1,2} *,? *[A-M] *')
+        Regex_gg = re.compile(r' *GG *')
+        if (Regex_1.fullmatch(input_msg)) or (Regex_2.fullmatch(input_msg)) or (Regex_gg.fullmatch(input_msg)):
             MATCHED_MSG = True
-        return MATCHED_MSG and (message.author.id == int(self.Player_id[self.curr_p]))
+        return MATCHED_MSG and (message.author.id == int(self.Player_id[self.curr_player]))
 
     async def _play_Omok(self, bot, ctx, OMOK_CHANNEL_ID, Player_1_id=None, Player_2_id=None, AI=False):
         default_GameBoard_13x13 = """\
@@ -52,7 +56,6 @@ u=============
         ary_player = np.zeros((2, Board_row, Board_col), dtype=int)
 
         # Player id
-        p_id = [Player_1_id, Player_2_id]
         self.Player_id[0] = int(Player_1_id)
         self.Player_id[1] = int(Player_2_id)
 
@@ -62,9 +65,6 @@ u=============
         p_stone = ['🔴', '🟢']
 
         # Input
-        curr_player = 0
-        self.curr_p = curr_player
-        prev_player = 1
         ROW_input = None
         COL_input = None
         p_input = ['', '']
@@ -73,12 +73,16 @@ u=============
         # Flags
         GAME_END = False
         GG_FLAG = False
-        TIME = 10
         MATCHED_INPUT_1 = None
         MATCHED_INPUT_1c = None
         MATCHED_INPUT_2 = None
         MATCHED_INPUT_2c = None
         OMOK_TURN_COUNT = 0
+
+        # Times
+        TIME = 10
+        time_START = 0
+        time_NOW = 0
 
         # Show blank
 
@@ -92,10 +96,11 @@ u=============
             while True:  # Loop for Not available coordinate
                 while True:  # Loop for Not available input
                     while True:  # Loop for Get input from reply
-                        input_K = await ctx.send(f'{p_stone[curr_player] * 2} <@{p_id[curr_player]}>님 차례입니다. {p_stone[curr_player] * 2}\n좌표를 입력해주세요!')
+                        input_K = await ctx.send(f'{p_stone[self.curr_player] * 2} <@{self.Player_id[self.curr_player]}>님 차례입니다. {p_stone[self.curr_player] * 2}\n좌표를 입력해주세요!')
                         msg_buf_input_K.append(input_K)
                         try:
                             left_time_K = await ctx.send("**이번 턴이 60초 남았습니다.**")
+                            time_START = time()
                             msg_buf_timeout_K.append(left_time_K)
                             self.input_msg = await bot.wait_for('message', check=self.is_current_player_msg, timeout=30)
                         except asyncio.TimeoutError:
@@ -117,16 +122,12 @@ u=============
                                         if msg_buf_timeout_K:
                                             await self.delete_msg(msg_buf_timeout_K)
                                             msg_buf_timeout_K = []
-                                        timeout_K = await ctx.send(f"**`TIME OUT`**\n**<@{p_id[prev_player]}>님에게 차례가 넘어갑니다.**")
+                                        timeout_K = await ctx.send(f"**`TIME OUT`**\n**<@{self.Player_id[self.prev_player]}>님에게 차례가 넘어갑니다.**")
                                         msg_buf_timeout_K.append(timeout_K)
-                                        if curr_player == 0:
-                                            prev_player = curr_player
-                                            curr_player += 1
-                                            self.curr_p = curr_player
-                                        else:  # curr_player == 1:
-                                            prev_player = curr_player
-                                            curr_player = 0
-                                            self.curr_p = curr_player
+
+                                        player_temp = self.prev_player
+                                        self.prev_player = self.curr_player
+                                        self.curr_player = player_temp
                                         continue
 
                         if not (self.input_msg.channel.id == OMOK_CHANNEL_ID):
@@ -139,7 +140,7 @@ u=============
                             await self.delete_msg(msg_buf_input_K)
                             msg_buf_input_K = []
 
-                        if self.input_msg.author.id == int(p_id[curr_player]):
+                        if self.input_msg.author.id == int(self.Player_id[self.curr_player]):
                             if self.input_msg.content.strip().upper() in ('GG'):  # GG ~~~~
                                 GG_FLAG = True
                                 break
@@ -149,26 +150,26 @@ u=============
                             MATCHED_INPUT_1c = None
                             MATCHED_INPUT_2 = None
                             MATCHED_INPUT_2c = None
-                            p_input[curr_player] = self.input_msg.content.upper()
-                            p_input[curr_player] = p_input[curr_player].strip()
+                            p_input[self.curr_player] = self.input_msg.content.upper()
+                            p_input[self.curr_player] = p_input[self.curr_player].strip()
                             # 영어 숫자
                             Regex_1 = re.compile(r' *[A-M] *\d{1,2} *')
-                            if Regex_1.fullmatch(p_input[curr_player]):
+                            if Regex_1.fullmatch(p_input[self.curr_player]):
                                 MATCHED_INPUT_1 = True
                                 break
                             # 영어, 숫자
                             Regex_1c = re.compile(r' *[A-M] *, *\d{1,2} *')
-                            if Regex_1c.fullmatch(p_input[curr_player]):
+                            if Regex_1c.fullmatch(p_input[self.curr_player]):
                                 MATCHED_INPUT_1c = True
                                 break
                             # 숫자 영어
                             Regex_2 = re.compile(r' *\d{1,2} *[A-M] *')
-                            if Regex_2.fullmatch(p_input[curr_player]):
+                            if Regex_2.fullmatch(p_input[self.curr_player]):
                                 MATCHED_INPUT_2 = True
                                 break
                             # 숫자, 영어
                             Regex_2c = re.compile(r' *\d{1,2} *, *[A-M] *')
-                            if Regex_2c.fullmatch(p_input[curr_player]):
+                            if Regex_2c.fullmatch(p_input[self.curr_player]):
                                 MATCHED_INPUT_2c = True
                                 break
                             else:
@@ -187,27 +188,27 @@ u=============
                     break
 
                 coordinate_buf = ''
-                for char in p_input[curr_player]:
+                for char in p_input[self.curr_player]:
                     if char in (' '):
                         pass
                     else:
                         coordinate_buf += char
                 # 문자 숫자
                 if MATCHED_INPUT_1:
-                    p_coordinate[curr_player] = [coordinate_buf[0], coordinate_buf[1:]]
+                    p_coordinate[self.curr_player] = [coordinate_buf[0], coordinate_buf[1:]]
                 # 숫자 문자
                 if MATCHED_INPUT_2:
-                    p_coordinate[curr_player] = [coordinate_buf[0:-1], coordinate_buf[-1]]
+                    p_coordinate[self.curr_player] = [coordinate_buf[0:-1], coordinate_buf[-1]]
                 # 문자, 숫자 OR 숫자, 문자
                 elif MATCHED_INPUT_1c or MATCHED_INPUT_2c:
-                    p_coordinate[curr_player] = coordinate_buf.split(',')
+                    p_coordinate[self.curr_player] = coordinate_buf.split(',')
 
                 # ROW, COL  # 문자 숫자 OR 문자, 숫자
                 if MATCHED_INPUT_1 or MATCHED_INPUT_1c:
-                    COL_input = ord(p_coordinate[curr_player][0]) - ord('A')
-                    ROW_input = int(p_coordinate[curr_player][1]) - 1
+                    COL_input = ord(p_coordinate[self.curr_player][0]) - ord('A')
+                    ROW_input = int(p_coordinate[self.curr_player][1]) - 1
                     if (ROW_input in range(Board_row)) and (COL_input in range(Board_col)) and (ary_Board_TF[ROW_input, COL_input]):
-                        ary_player[curr_player, ROW_input, COL_input] = 1
+                        ary_player[self.curr_player, ROW_input, COL_input] = 1
                         ary_Board_TF[ROW_input, COL_input] = False
                         break
                     else:
@@ -217,10 +218,10 @@ u=============
                         continue
                 # COL, ROW  # 숫자 문자 OR 숫자, 문자
                 elif MATCHED_INPUT_2 or MATCHED_INPUT_2c:
-                    COL_input = ord(p_coordinate[curr_player][1]) - ord('A')
-                    ROW_input = int(p_coordinate[curr_player][0]) - 1
+                    COL_input = ord(p_coordinate[self.curr_player][1]) - ord('A')
+                    ROW_input = int(p_coordinate[self.curr_player][0]) - 1
                     if (ROW_input in range(Board_row)) and (COL_input in range(Board_col)) and (ary_Board_TF[ROW_input, COL_input]):
-                        ary_player[curr_player, ROW_input, COL_input] = 1
+                        ary_player[self.curr_player, ROW_input, COL_input] = 1
                         ary_Board_TF[ROW_input, COL_input] = False
                         break
                     else:
@@ -239,12 +240,12 @@ u=============
             # GG END
 
             if GG_FLAG:  # GG ~~~~
-                if curr_player == 0:
-                    await ctx.send(f'🔴<@{p_id[0]}>: `GG`\n🟢🟢🟢🟢🟢 WINNER is <@{p_id[1]}> !! 🟢🟢🟢🟢🟢')
+                if self.curr_player == 0:
+                    await ctx.send(f'🔴<@{self.Player_id[0]}>: `GG`\n🟢🟢🟢🟢🟢 WINNER is <@{self.Player_id[1]}> !! 🟢🟢🟢🟢🟢')
                     await ctx.send("오목 게임 모드를 `종료`합니다.")
                     break
-                elif curr_player == 1:
-                    await ctx.send(f'🟢<@{p_id[1]}>: `GG`\n🔴🔴🔴🔴🔴 WINNER is <@{p_id[0]}> !! 🔴🔴🔴🔴🔴')
+                elif self.curr_player == 1:
+                    await ctx.send(f'🟢<@{self.Player_id[1]}>: `GG`\n🔴🔴🔴🔴🔴 WINNER is <@{self.Player_id[0]}> !! 🔴🔴🔴🔴🔴')
                     await ctx.send("오목 게임 모드를 `종료`합니다.")
                     break
 
@@ -261,16 +262,16 @@ u=============
                     if ary_Board_TF[row, col]:
                         # Board and Past
                         renewed_Board_Buf += default_GameBoard_13x13[draw_count]
-                    elif ary_player[curr_player, row, col] == 1:
+                    elif ary_player[self.curr_player, row, col] == 1:
                         if (row == ROW_input) and (col == COL_input):
                             # curr_player input stone (one)
-                            renewed_Board_Buf += p_curr_str[curr_player]
+                            renewed_Board_Buf += p_curr_str[self.curr_player]
                         else:
                             # curr_player stones (all w/o [ROW_input, COL_input])
-                            renewed_Board_Buf += p_past_str[curr_player]
+                            renewed_Board_Buf += p_past_str[self.curr_player]
                     else:
                         # prev_player stones (all)
-                        renewed_Board_Buf += p_past_str[prev_player]
+                        renewed_Board_Buf += p_past_str[self.prev_player]
                 renewed_Board_Buf += '\n'
                 draw_count += 1
             playing_GameBoard_13x13 = renewed_Board_Buf
@@ -280,23 +281,23 @@ u=============
             await msg_Board.delete()
             board_K = await ctx.invoke(bot.get_command("board"),
                                        board=playing_GameBoard_13x13,
-                                       current_player=curr_player,
-                                       current_player_id=p_id[curr_player],
-                                       input_coordinate=p_coordinate[curr_player])
+                                       current_player=self.curr_player,
+                                       current_player_id=self.Player_id[self.curr_player],
+                                       input_coordinate=p_coordinate[self.curr_player])
             msg_Board = board_K
 
             # Check 5 series dots [ - ] : Horizontal
 
             for row in range(Board_row):
                 for col in range(Board_col - 4):
-                    if np.sum(ary_player[curr_player, row, col:col + 5]) == 5:
+                    if np.sum(ary_player[self.curr_player, row, col:col + 5]) == 5:
                         GAME_END = True
 
             # Check 5 series dots [ | ] : Vertical
 
             for row in range(Board_row - 4):
                 for col in range(Board_col):
-                    if np.sum(ary_player[curr_player, row:row + 5, col]) == 5:
+                    if np.sum(ary_player[self.curr_player, row:row + 5, col]) == 5:
                         GAME_END = True
 
             # Check 5 series dots [ \ ] : Backslash
@@ -305,7 +306,7 @@ u=============
                 for col in range(Board_col - 4):
                     ele_sum = 0
                     for idx in range(5):
-                        ele_sum += ary_player[curr_player, row + idx, col + idx]
+                        ele_sum += ary_player[self.curr_player, row + idx, col + idx]
                     if ele_sum == 5:
                         GAME_END = True
 
@@ -315,26 +316,24 @@ u=============
                 for col in range(4, Board_col):
                     ele_sum = 0
                     for idx in range(5):
-                        ele_sum += ary_player[curr_player, row + idx, col - idx]
+                        ele_sum += ary_player[self.curr_player, row + idx, col - idx]
                     if ele_sum == 5:
                         GAME_END = True
 
             # Game over
 
             if GAME_END:
-                if curr_player == 0:
-                    await ctx.send(f'🔴🔴🔴🔴🔴 WINNER is <@{p_id[0]}> !! 🔴🔴🔴🔴🔴')
-                elif curr_player == 1:
-                    await ctx.send(f'🟢🟢🟢🟢🟢 WINNER is <@{p_id[1]}> !! 🟢🟢🟢🟢🟢')
+                if self.curr_player == 0:
+                    await ctx.send(f'🔴🔴🔴🔴🔴 WINNER is <@{self.Player_id[0]}> !! 🔴🔴🔴🔴🔴')
+                elif self.curr_player == 1:
+                    await ctx.send(f'🟢🟢🟢🟢🟢 WINNER is <@{self.Player_id[1]}> !! 🟢🟢🟢🟢🟢')
                 break
             else:
                 OMOK_TURN_COUNT += 1
                 if OMOK_TURN_COUNT == 169:
                     await ctx.send('🔴🟢🔴🟢🔴 !! DRAW !! 🟢🔴🟢🔴🟢')
                     break
-                elif curr_player == 0:
-                    prev_player = curr_player
-                    curr_player += 1
-                else:  # curr_player == 1:
-                    prev_player = curr_player
-                    curr_player = 0
+                else:
+                    player_temp = self.prev_player
+                    self.prev_player = self.curr_player
+                    self.curr_player = player_temp
