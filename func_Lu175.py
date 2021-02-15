@@ -17,3 +17,18 @@ async def get_replied_msg(bot, message=None, context=None):
     else:
         print("Replied message is None.")
         return None
+
+
+async def get_emoji_url(emoji_id: str, mode=None):
+    if mode == 1:  # custom animated emoji
+        # https://cdn.discordapp.com/emojis/<Emoji_id>.gif?v=1
+        return "https://cdn.discordapp.com/emojis/" + emoji_id + ".gif?v=1"
+    elif mode == 2:  # custom non-animated emoji
+        # https://cdn.discordapp.com/emojis/<Emoji_id>.png
+        return "https://cdn.discordapp.com/emojis/" + emoji_id + ".png"
+    elif mode == 3:  # unicode emoji
+        # https://twemoji.maxcdn.com/v/latest/72x72/<CODE>.png
+        return "https://twemoji.maxcdn.com/v/latest/72x72/" + emoji_id + ".png"
+    else:
+        print("Replied URL is None.")
+        return None
