@@ -21,11 +21,9 @@ class ZoomingEmoji(commands.Cog):
             A_Custom_Emoji_list = re.findall(r'<a:\w*:\d*>', message.content)
             if len(A_Custom_Emoji_list) == 1:
                 if A_Custom_Emoji_list[0] == message.content:
-                    # https://cdn.discordapp.com/emojis/<Emoji_id>.gif?v=1
-                    Emoji_id = (A_Custom_Emoji_list[0].split(":")[2])[:-1]
                     embed_Emoji = discord.Embed(colour=self.Luby_color)
-                    # Emoji_URL = Luby.get_emoji(id=int(Emoji_id)).url
-                    Emoji_URL = "https://cdn.discordapp.com/emojis/" + Emoji_id + ".gif?v=1"
+                    Emoji_id = (A_Custom_Emoji_list[0].split(":")[2])[:-1]
+                    Emoji_URL = await FLU.get_emoji_url(Emoji_id, 1)
                     embed_Emoji.set_image(url=Emoji_URL)
                     embed_Emoji.set_footer(text=self.Luby_footer)
                     embed_Emoji.set_author(name=message.author.display_name, icon_url=message.author.avatar_url)
@@ -34,7 +32,7 @@ class ZoomingEmoji(commands.Cog):
                         if replied_msg.embeds:
                             if replied_msg.embeds[0].author != self.bot.user:
                                 embed_author_id = replied_msg.embeds[0].author.icon_url.split('/')[4]
-                                await message.channel.send(f'<@{embed_author_id}>\n')
+                                await replied_msg.reply(f'<@{embed_author_id}>\n')
                                 await message.channel.send(embed=embed_Emoji)
                         else:
                             await replied_msg.reply(embed=embed_Emoji)
@@ -44,11 +42,9 @@ class ZoomingEmoji(commands.Cog):
             Custom_Emoji_list = re.findall(r'<:\w*:\d*>', message.content)
             if len(Custom_Emoji_list) == 1:
                 if Custom_Emoji_list[0] == message.content:
-                    # https://cdn.discordapp.com/emojis/<Emoji_id>.png
-                    Emoji_id = (Custom_Emoji_list[0].split(":")[2])[:-1]
                     embed_Emoji = discord.Embed(colour=self.Luby_color)
-                    # Emoji_URL = Luby.get_emoji(id=int(Emoji_id)).url
-                    Emoji_URL = "https://cdn.discordapp.com/emojis/" + Emoji_id + ".png"
+                    Emoji_id = (Custom_Emoji_list[0].split(":")[2])[:-1]
+                    Emoji_URL = await FLU.get_emoji_url(Emoji_id, 2)
                     embed_Emoji.set_image(url=Emoji_URL)
                     embed_Emoji.set_footer(text=self.Luby_footer)
                     embed_Emoji.set_author(name=message.author.display_name, icon_url=message.author.avatar_url)
@@ -57,7 +53,7 @@ class ZoomingEmoji(commands.Cog):
                         if replied_msg.embeds:
                             if replied_msg.embeds[0].author != self.bot.user:
                                 embed_author_id = replied_msg.embeds[0].author.icon_url.split('/')[4]
-                                await message.channel.send(f'<@{embed_author_id}>\n')
+                                await replied_msg.reply(f'<@{embed_author_id}>\n')
                                 await message.channel.send(embed=embed_Emoji)
                         else:
                             await replied_msg.reply(embed=embed_Emoji)
@@ -89,7 +85,7 @@ class ZoomingEmoji(commands.Cog):
                 if Emoji_for_send in self.unicodeEmoji:
                     # It's available
                     embed_Emoji = discord.Embed(colour=self.Luby_color)
-                    Emoji_URL = "https://twemoji.maxcdn.com/v/latest/72x72/" + Emoji_for_send + ".png"
+                    Emoji_URL = await FLU.get_emoji_url(Emoji_for_send, 3)
                     embed_Emoji.set_image(url=Emoji_URL)
                     embed_Emoji.set_footer(text=self.Luby_footer)
                     embed_Emoji.set_author(name=message.author.display_name, icon_url=message.author.avatar_url)
@@ -98,7 +94,7 @@ class ZoomingEmoji(commands.Cog):
                         if replied_msg.embeds:
                             if replied_msg.embeds[0].author != self.bot.user:
                                 embed_author_id = replied_msg.embeds[0].author.icon_url.split('/')[4]
-                                await message.channel.send(f'<@{embed_author_id}>\n')
+                                await replied_msg.reply(f'<@{embed_author_id}>\n')
                                 await message.channel.send(embed=embed_Emoji)
                         else:
                             await replied_msg.reply(embed=embed_Emoji)
