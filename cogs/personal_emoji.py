@@ -11,11 +11,11 @@ class ReleaseLog(commands.Cog):
         self.Luby_footer = Luby_info.Luby_footer
         self.Activity_name = Luby_info.Luby_Activity_name
 
-    async def send_zoom_emoji(self, message, Custom_Emoji_id: str):
+    async def send_zoom_emoji(self, message, Custom_Emoji_id: str, mode=None):
         replied_msg = await FLU.get_replied_msg(bot=self.bot, message=message)
         # https://cdn.discordapp.com/emojis/<Emoji_id>.png
         embed_Emoji = discord.Embed(colour=self.Luby_color)
-        Emoji_URL = "https://cdn.discordapp.com/emojis/" + Custom_Emoji_id + ".png"
+        Emoji_URL = await FLU.get_emoji_url(Custom_Emoji_id, mode=mode)
         embed_Emoji.set_image(url=Emoji_URL)
         embed_Emoji.set_footer(text=self.Luby_footer)
         embed_Emoji.set_author(name=message.author.display_name, icon_url=message.author.avatar_url)
@@ -24,7 +24,7 @@ class ReleaseLog(commands.Cog):
             if replied_msg.embeds:
                 if replied_msg.embeds[0].author != self.bot.user:
                     embed_author_id = replied_msg.embeds[0].author.icon_url.split('/')[4]
-                    await message.channel.send(f'<@{embed_author_id}>\n')
+                    await replied_msg.reply(f'<@{embed_author_id}>\n')
                     await message.channel.send(embed=embed_Emoji)
             else:
                 await replied_msg.reply(embed=embed_Emoji)
@@ -37,23 +37,9 @@ class ReleaseLog(commands.Cog):
             return
         else:
             if message.content == '코딩해':
-                replied_msg = await FLU.get_replied_msg(bot=self.bot, message=message)
-                embed_Emoji = discord.Embed(colour=self.Luby_color)
-                Emoji_URL = await FLU.get_emoji_url('806893600591446017', mode=1)
-                embed_Emoji.set_image(url=Emoji_URL)
-                embed_Emoji.set_footer(text=self.Luby_footer)
-                embed_Emoji.set_author(name=message.author.display_name, icon_url=message.author.avatar_url)
-                await message.delete()
-                if replied_msg is not None:
-                    if replied_msg.embeds:
-                        if replied_msg.embeds[0].author != self.bot.user:
-                            embed_author_id = replied_msg.embeds[0].author.icon_url.split('/')[4]
-                            await message.channel.send(f'<@{embed_author_id}>\n')
-                            await message.channel.send(embed=embed_Emoji)
-                    else:
-                        await replied_msg.reply(embed=embed_Emoji)
-                else:
-                    await message.channel.send(embed=embed_Emoji)
+                await self.send_zoom_emoji(message, '806893600591446017', mode=1)
+            if message.content == '?!':
+                await self.send_zoom_emoji(message, '667750969592774676', mode=1)
 
             if message.content[:2] == '냠냠':
                 await message.channel.send('<:Green_chicken:787024373457747968> <:Green_chicken:787024373457747968> <:Green_chicken:787024373457747968> <:Green_chicken:787024373457747968>')
@@ -94,15 +80,15 @@ class ReleaseLog(commands.Cog):
 
             gunchim_emoji = message.content.lower().replace(' ', '')
             if gunchim_emoji == 'gc1':
-                await self.send_zoom_emoji(message, Custom_Emoji_id='751799099409432678')
+                await self.send_zoom_emoji(message, Custom_Emoji_id='751799099409432678', mode=2)
             elif gunchim_emoji == 'gc2':
-                await self.send_zoom_emoji(message, Custom_Emoji_id='751799099967406191')
+                await self.send_zoom_emoji(message, Custom_Emoji_id='751799099967406191', mode=2)
             elif gunchim_emoji == 'gc3':
-                await self.send_zoom_emoji(message, Custom_Emoji_id='781358457768247316')
+                await self.send_zoom_emoji(message, Custom_Emoji_id='781358457768247316', mode=2)
             elif gunchim_emoji == 'gc4':
-                await self.send_zoom_emoji(message, Custom_Emoji_id='751799101204594739')
+                await self.send_zoom_emoji(message, Custom_Emoji_id='751799101204594739', mode=2)
             elif gunchim_emoji == 'gc5':
-                await self.send_zoom_emoji(message, Custom_Emoji_id='751799103259934750')
+                await self.send_zoom_emoji(message, Custom_Emoji_id='751799103259934750', mode=2)
 
             if message.content[:3] == '자스고':
                 # Filtering
