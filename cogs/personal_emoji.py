@@ -39,9 +39,7 @@ class ReleaseLog(commands.Cog):
             if message.content == '코딩해':
                 replied_msg = await FLU.get_replied_msg(bot=self.bot, message=message)
                 embed_Emoji = discord.Embed(colour=self.Luby_color)
-                # Emoji_URL = Luby.get_emoji(id=int(Emoji_id)).url
-                # <a:coco:806893600591446017>
-                Emoji_URL = "https://cdn.discordapp.com/emojis/806893600591446017.gif?v=1"
+                Emoji_URL = await FLU.get_emoji_url('806893600591446017', mode=1)
                 embed_Emoji.set_image(url=Emoji_URL)
                 embed_Emoji.set_footer(text=self.Luby_footer)
                 embed_Emoji.set_author(name=message.author.display_name, icon_url=message.author.avatar_url)
