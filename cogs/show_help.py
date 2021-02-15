@@ -18,7 +18,7 @@ class ShowHelp(commands.Cog):
     @commands.group(name='help')
     async def help_group(self, ctx):
         if ctx.invoked_subcommand is None:
-            embed_help = discord.Embed(title=f"네, {str(ctx.author)[:-5]}님!\n무엇을 도와드릴까요?",
+            embed_help = discord.Embed(title=f"네, {ctx.author.display_name}님!\n무엇을 도와드릴까요?",
                                        colour=self.Luby_color,
                                        description='루비의 명령어들 입니다!')
             embed_help.set_thumbnail(url='https://lu175.com/pic/swan_1.png')
