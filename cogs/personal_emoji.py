@@ -24,7 +24,7 @@ class ReleaseLog(commands.Cog):
             if replied_msg.embeds:
                 if replied_msg.embeds[0].author != self.bot.user:
                     embed_author_id = replied_msg.embeds[0].author.icon_url.split('/')[4]
-                    await message.channel.send(f'<@!{embed_author_id}>\n')
+                    await message.channel.send(f'<@{embed_author_id}>\n')
                     await message.channel.send(embed=embed_Emoji)
             else:
                 await replied_msg.reply(embed=embed_Emoji)
@@ -50,7 +50,7 @@ class ReleaseLog(commands.Cog):
                     if replied_msg.embeds:
                         if replied_msg.embeds[0].author != self.bot.user:
                             embed_author_id = replied_msg.embeds[0].author.icon_url.split('/')[4]
-                            await message.channel.send(f'<@!{embed_author_id}>\n')
+                            await message.channel.send(f'<@{embed_author_id}>\n')
                             await message.channel.send(embed=embed_Emoji)
                     else:
                         await replied_msg.reply(embed=embed_Emoji)

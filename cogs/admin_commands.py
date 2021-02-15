@@ -26,16 +26,16 @@ class AdminCommand(commands.Cog):
     @commands.command(name='kick')
     async def fake_kick(self, ctx, user: discord.User = None):
         if user is None:
-            await ctx.send(f"<@!{ctx.author.id}>님, 누구를 **KICK** 하시겠습니까?")
+            await ctx.send(f"<@{ctx.author.id}>님, 누구를 **KICK** 하시겠습니까?")
         else:
-            await ctx.send(f"<@!{user.id}>님이 <@!{ctx.author.id}>님에 의해 **KICK** 되셨습니다.")
+            await ctx.send(f"<@{user.id}>님이 <@{ctx.author.id}>님에 의해 **KICK** 되셨습니다.")
 
     @commands.command(name='ban')
     async def fake_ban(self, ctx, user: discord.User = None):
         if user is None:
-            await ctx.send(f"<@!{ctx.author.id}>님, 누구를 **BAN** 하시겠습니까?")
+            await ctx.send(f"<@{ctx.author.id}>님, 누구를 **BAN** 하시겠습니까?")
         else:
-            await ctx.send(f"<@!{user.id}>님이 <@!{ctx.author.id}>님에 의해 **BAN** 되셨습니다.")
+            await ctx.send(f"<@{user.id}>님이 <@{ctx.author.id}>님에 의해 **BAN** 되셨습니다.")
 
 
 def setup(bot):
