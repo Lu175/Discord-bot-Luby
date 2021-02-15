@@ -1,6 +1,8 @@
 import discord
 from discord.ext import commands
+import asyncio
 import Luby_info
+import func_Lu175 as FLU
 
 
 class Testing(commands.Cog):
@@ -48,6 +50,26 @@ class Testing(commands.Cog):
             }
         }
 
+    async def send_zoom_emoji(self, message, Custom_Emoji_id: str):
+        replied_msg = await FLU.get_replied_msg(bot=self.bot, message=message)
+        # https://cdn.discordapp.com/emojis/<Emoji_id>.png
+        embed_Emoji = discord.Embed(colour=self.Luby_color)
+        Emoji_URL = "https://cdn.discordapp.com/emojis/" + Custom_Emoji_id + ".png"
+        embed_Emoji.set_image(url=Emoji_URL)
+        embed_Emoji.set_footer(text=self.Luby_footer)
+        embed_Emoji.set_author(name=message.author.display_name, icon_url=message.author.avatar_url)
+        await message.delete()
+        if replied_msg is not None:
+            if replied_msg.embeds:
+                if replied_msg.embeds[0].author != self.bot.user:
+                    embed_author_id = replied_msg.embeds[0].author.icon_url.split('/')[4]
+                    await message.channel.send(f'<@{embed_author_id}>\n')
+                    await message.channel.send(embed=embed_Emoji)
+            else:
+                await replied_msg.reply(embed=embed_Emoji)
+        else:
+            await message.channel.send(embed=embed_Emoji)
+
     @commands.command()
     async def card_test(self, ctx, embed=False):
         if ctx.author.id == int(self.eeLu175_id):
@@ -83,7 +105,7 @@ class Testing(commands.Cog):
     #             processed_emoji = emoji
     #         await ctx.message.add_reaction(processed_emoji)
 
-    @commands.command()
+    @commands.group()
     async def test(self, ctx):
         if ctx.author.id == int(self.eeLu175_id):
             embed_0 = discord.Embed(title='Google',
@@ -91,11 +113,13 @@ class Testing(commands.Cog):
                                     url='https://www.google.com',
                                     description='Description')
             # embed_0.set_thumbnail(url='https://lu175.com/pic/HaNyang_PNG-34.png')
-            Emoji_URL = "https://cdn.discordapp.com/emojis/808710970439761970.gif?v=1"
-            embed_0.set_thumbnail(url=Emoji_URL)
+            Emoji_URL_1 = await FLU.get_emoji_url('808710970439761970', mode=1)
+            embed_0.set_thumbnail(url=Emoji_URL_1)
             embed_0.add_field(name='alphabet', value=' 🇦 🇧 🇨 🇩 🇪 🇫 🇬 🇭 🇮 🇯 🇰 🇱 🇲', inline=False)
             embed_0.add_field(name='Loading_Bar_R20s', value='<a:Loading_Bar_R20s:808705256094564363>', inline=False)
             embed_0.add_field(name='Loading_Bar_RGB60s', value='<a:Loading_Bar_RGB60s:808710970439761970>', inline=False)
+            Emoji_URL_2 = await FLU.get_emoji_url('667750969592774676', mode=1)
+            embed_0.set_image(url=Emoji_URL_2)
             if ctx.message.reference is not None:
                 replied_msg = await self.bot.get_channel(ctx.message.reference.channel_id).fetch_message(ctx.message.reference.message_id)
                 embed_0.add_field(name='replied_msg.content', value=replied_msg.content, inline=False)
@@ -109,6 +133,12 @@ class Testing(commands.Cog):
                 #     count += 1
             embed_0.set_footer(text=self.Luby_footer)
             await ctx.send(embed=embed_0)
+
+    @test.command()
+    async def men(self, ctx):
+        await ctx.send(f'**{ctx.author.display_name}**님! 3초 뒤에 멘션 드릴게요~')
+        await asyncio.sleep(3)
+        await ctx.send(f'<@ctx.author.id>: <@{ctx.author.id}>')
 
     @commands.command()
     async def c_test(self, ctx):
