@@ -18,6 +18,25 @@ class ZoomingEmoji(commands.Cog):
             return
         else:
             replied_msg = await FLU.get_replied_msg(bot=self.bot, message=message)
+
+            if message.content == ':+1:':
+                embed_Emoji = discord.Embed(colour=self.Luby_color)
+                Emoji_URL = await FLU.get_emoji_url('1f44d', 3)
+                embed_Emoji.set_image(url=Emoji_URL)
+                embed_Emoji.set_footer(text=self.Luby_footer)
+                embed_Emoji.set_author(name=message.author.display_name, icon_url=message.author.avatar_url)
+                await message.delete()
+                if replied_msg is not None:
+                    if replied_msg.embeds:
+                        if replied_msg.embeds[0].author != self.bot.user:
+                            embed_author_id = replied_msg.embeds[0].author.icon_url.split('/')[4]
+                            await replied_msg.reply(f'<@{embed_author_id}>\n')
+                            await message.channel.send(embed=embed_Emoji)
+                    else:
+                        await replied_msg.reply(embed=embed_Emoji)
+                else:
+                    await message.channel.send(embed=embed_Emoji)
+
             A_Custom_Emoji_list = re.findall(r'<a:\w*:\d*>', message.content)
             if len(A_Custom_Emoji_list) == 1:
                 if A_Custom_Emoji_list[0] == message.content:
