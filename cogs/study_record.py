@@ -20,15 +20,15 @@ class StudyRecord(commands.Cog):
 
     async def timer(self, ctx, LAP=False, RESET=False):
         if LAP:
+            self.NOW_STUDY = False
             self.LAP_TIME.append(time())
             await ctx.send(f'Lap Time: {make_time_str(self.LAP_TIME[-1] - self.REF_TIME)}')
             self.REF_TIME = self.LAP_TIME[-1]
-            await self.showTimerMsg.delete()
+            await asyncio.sleep(1)
+            self.NOW_STUDY = True
         elif RESET:
             self.LAP_TIME = []
-            await self.showTimerMsg.delete()
 
-        self.showTimerMsg = None
         self.showTimerMsg = await ctx.send(f'Timer: {make_time_str(time() - self.REF_TIME)}')
         while self.NOW_STUDY:
             await asyncio.sleep(1)
@@ -47,7 +47,7 @@ class StudyRecord(commands.Cog):
             await ctx.send('공부 끝!')
             await ctx.send(f'총 공부시간: `'+make_time_str(time() - self.START_TIME)+'`')
 
-    @commands.command(aliases=['공부시작'])
+    @commands.command(aliases=['공부시작', '공부하자'])
     async def lets_study(self, ctx):
         if ctx.author.id == int(self.eeLu175_id):
             if not self.NOW_STUDY:
@@ -56,7 +56,8 @@ class StudyRecord(commands.Cog):
     @commands.command()
     async def lap(self, ctx):
         if ctx.author.id == int(self.eeLu175_id):
-            await self.timer(ctx, LAP=True)
+            if self.NOW_STUDY:
+                await self.timer(ctx, LAP=True)
 
     @commands.command()
     async def done(self, ctx):
