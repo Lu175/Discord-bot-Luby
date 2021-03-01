@@ -3,14 +3,16 @@ from discord.ext import commands
 import Luby_info
 import asyncio
 from time import time
+from math import floor
 
 
 def make_time_str(time_sec):
-    return str(int(time_sec // 3600)) + '시간 ' + str(int((time_sec % 3600) // 60)) + '분 ' + str(round(time_sec % 60)) + '초'
+    return str(int(time_sec // 3600)) + '시간 ' + str(int((time_sec % 3600) // 60)) + '분 ' + str(floor(time_sec % 60)) + '초'
 
 
 class StudyRecord(commands.Cog):
     def __init__(self, bot):
+        self.bot = bot
         self.eeLu175_id = Luby_info.eeLu175_id
         self.NOW_STUDY = False
         self.showTimerMsg = None
@@ -24,14 +26,14 @@ class StudyRecord(commands.Cog):
             self.LAP_TIME.append(time())
             await ctx.send(f'Lap Time: {make_time_str(self.LAP_TIME[-1] - self.REF_TIME)}')
             self.REF_TIME = self.LAP_TIME[-1]
-            await asyncio.sleep(1)
+            await asyncio.sleep(1 - self.bot.latency)
             self.NOW_STUDY = True
         elif RESET:
             self.LAP_TIME = []
 
         self.showTimerMsg = await ctx.send(f'Timer: {make_time_str(time() - self.REF_TIME)}')
         while self.NOW_STUDY:
-            await asyncio.sleep(1)
+            await asyncio.sleep(1 - self.bot.latency)
             await self.showTimerMsg.edit(content=f'Timer: {make_time_str(time() - self.REF_TIME)}')
         await self.showTimerMsg.delete()
 
