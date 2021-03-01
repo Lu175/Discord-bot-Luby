@@ -1,5 +1,6 @@
 import discord
 from discord.ext import commands
+import asyncio
 import func_Lu175 as FLU
 
 
@@ -21,21 +22,34 @@ class AdminCommand(commands.Cog):
             else:
                 await ctx.channel.purge(limit=amount)
 
+    @commands.command(aliases=['GP', 'Gp', 'gp'])
+    @commands.has_permissions(administrator=True)
+    async def ghost_ping(self, ctx, target_user: discord.User = None):
+        if target_user is None:
+            GP_guide_msg = await ctx.send(f"누구를 **PING** 하시겠습니까?\n사용법: `./gp <멘션>`")
+            await ctx.message.delete()
+            await asyncio.sleep(1)
+            await GP_guide_msg.delete()
+        else:
+            GP_msg = await ctx.send(f"<@{target_user.id}>")
+            await ctx.message.delete()
+            await GP_msg.delete()
+
     # Fake commands
 
     @commands.command(name='kick')
-    async def fake_kick(self, ctx, user: discord.User = None):
-        if user is None:
+    async def fake_kick(self, ctx, target_user: discord.User = None):
+        if target_user is None:
             await ctx.send(f"<@{ctx.author.id}>님, 누구를 **KICK** 하시겠습니까?")
         else:
-            await ctx.send(f"<@{user.id}>님이 <@{ctx.author.id}>님에 의해 **KICK** 되셨습니다.")
+            await ctx.send(f"<@{target_user.id}>님이 <@{ctx.author.id}>님에 의해 **KICK** 되셨습니다.")
 
     @commands.command(name='ban')
-    async def fake_ban(self, ctx, user: discord.User = None):
-        if user is None:
+    async def fake_ban(self, ctx, target_user: discord.User = None):
+        if target_user is None:
             await ctx.send(f"<@{ctx.author.id}>님, 누구를 **BAN** 하시겠습니까?")
         else:
-            await ctx.send(f"<@{user.id}>님이 <@{ctx.author.id}>님에 의해 **BAN** 되셨습니다.")
+            await ctx.send(f"<@{target_user.id}>님이 <@{ctx.author.id}>님에 의해 **BAN** 되셨습니다.")
 
 
 def setup(bot):
