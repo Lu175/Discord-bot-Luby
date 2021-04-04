@@ -45,7 +45,7 @@ class StudyRecord(commands.Cog):
             if len(self.LAP_TIME_str) == 5:
                 self.LAP_TIME_str.pop()
             self.LAP_TIME_str.insert(0, str(self.LAP_COUNT) +'. '+ make_time_str(self.LAP_TIME[0] - self.REF_TIME))
-            self.REF_TIME = self.LAP_TIME[-1]
+            self.REF_TIME = self.LAP_TIME[0]
             await asyncio.sleep(1)
             self.NOW_STUDY = True
         elif RESET:
