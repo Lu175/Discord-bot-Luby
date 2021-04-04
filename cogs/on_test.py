@@ -3,11 +3,13 @@ from discord.ext import commands
 import asyncio
 import Luby_info
 import func_Lu175 as FLU
+import re
 
 
 class Testing(commands.Cog):
     def __init__(self, bot):
         self.bot = bot
+        self.curr_message = None
         self.eeLu175_id = Luby_info.eeLu175_id
         self.Luby_color = Luby_info.Luby_color
         self.Luby_footer = Luby_info.Luby_footer
@@ -91,7 +93,7 @@ class Testing(commands.Cog):
                     except discord.errors.HTTPException:
                         await ctx.channel.send(':thinking: 이 그림은 좀 큰데요...?\n조금만 작게 그려주세요.')
 
-    @commands.command(name='l')
+    @commands.command()
     async def large_emoji(self, ctx, emoji: discord.Emoji):
         if ctx.author.id == int(self.eeLu175_id):
             await ctx.send(emoji.url)
@@ -175,6 +177,49 @@ class Testing(commands.Cog):
     #     embed_on_test.add_field(name='NOW', value='TESTING...', inline=False)
     #     embed_on_test.set_footer(text=Luby_footer)
     #     await ctx.send(embed=embed_on_test)
+
+    def Lu_startswith(self, prefix):
+        Regex = re.compile(fr'{prefix}')
+        Matched_msg = Regex.match(self.curr_message)  # match()는 문자열 앞부분부터 시작해서 매칭되는지 확인
+        if Matched_msg:  # 문자열 앞부분이 매칭된다면
+            return True
+        else:
+            return False
+
+    @commands.Cog.listener()
+    async def on_message(self, message):
+        self.curr_message = message.content
+        if message.author.id == int(self.eeLu175_id):
+            if self.Lu_startswith('1'):
+                await message.channel.send('1 [ok]')
+            elif self.Lu_startswith('2'):
+                await message.channel.send('2 [ok]')
+            elif self.Lu_startswith('3'):
+                await message.channel.send('3 [ok]')
+            else:
+                pass
+
+    @commands.command()
+    async def get_names(self, ctx):
+        if ctx.author.id == int(self.eeLu175_id):
+            names = list()
+            for user in ctx.channel.members:
+                names.append(user.name)
+            names.sort()
+
+            await ctx.channel.send('\n'.join(names))
+            await ctx.channel.send(f'{len(names)}')
+
+    @commands.command()
+    async def get_name(self, ctx, user_name):
+        if ctx.author.id == int(self.eeLu175_id):
+            if user_name is not None:
+                await ctx.send(ctx.guild.get_member_named(user_name))
+
+    @commands.command()
+    async def test_1(self, ctx):
+        if ctx.author.id == int(self.eeLu175_id):
+            pass
 
 
 def setup(bot):
