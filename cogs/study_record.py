@@ -96,6 +96,14 @@ class StudyRecord(commands.Cog):
             if self.NOW_STUDY:
                 await self.record_process(ctx)
 
+            # RESET
+            self.showTimerEmbed = None
+            self.START_TIME = None
+            self.LAP_COUNT = 0
+            self.LAP_TIME = []
+            self.LAP_TIME_str = []
+            self.REF_TIME = None
+
 
 def setup(bot):
     bot.add_cog(StudyRecord(bot))
