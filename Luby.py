@@ -5,7 +5,6 @@ import os.path
 import Luby_info
 import Luby_ctrl
 import re
-import func_Lu175 as FLU
 import game_5mok as OM
 
 
@@ -241,12 +240,15 @@ u=============
 if __name__ == "__main__":
     for cog_fName in os.listdir(Luby_info.Luby_path + "/cogs"):
         if cog_fName[-2:] == "py":
-            try:
-                extension = "cogs." + cog_fName[:-3]
-                Luby.load_extension(extension)
-            except Exception as e:
-                exc = f"{type(e).__name__}: {e}"
-                print(f"Failed to load '{extension}'\n{exc}")
+            Luby_info.cogs_list.append(cog_fName[:-3])
+
+    for cog_name in Luby_info.cogs_list:
+        try:
+            extension = "cogs." + cog_name
+            Luby.load_extension(extension)
+        except Exception as e:
+            exc = f"{type(e).__name__}: {e}"
+            print(f"Failed to load '{extension}'\n{exc}")
 
     # RUN
 
