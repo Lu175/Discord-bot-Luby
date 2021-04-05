@@ -4,6 +4,7 @@ import util.study_timer as cogsST
 
 class TimerCommand(commands.Cog):
     def __init__(self, bot):
+        self.bot = bot
         self.user_id_list = []
         self.timer_list = []
 
