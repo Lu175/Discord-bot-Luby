@@ -22,26 +22,6 @@ class AdminCommand(commands.Cog):
             else:
                 await ctx.channel.purge(limit=amount)
 
-    # @commands.command(aliases=['GP', 'Gp', 'gp'])
-    # @commands.has_permissions(administrator=True)
-    # async def ghost_ping(self, ctx, target_user_name=None):
-    #     if target_user_name is None:
-    #         GP_guide_msg = await ctx.send(f"누구를 **PING** 하시겠습니까?\n사용법: `./gp 닉네임`")
-    #         await ctx.message.delete()
-    #         await asyncio.sleep(1.5)
-    #         await GP_guide_msg.delete()
-    #     else:
-    #         target_user = ctx.guild.get_member_named(target_user_name)
-    #         print(target_user)
-    #         if target_user is None:
-    #             await ctx.send(f'<#{ctx.channel.id}>에서 `{target_user_name}`님을 찾을 수 없네요...')
-    #             await ctx.message.delete()
-    #         else:
-    #             GP_msg = await ctx.send(f'<@{target_user.id}>')
-    #             await ctx.message.delete()
-    #             await asyncio.sleep(0.1)
-    #             await GP_msg.delete()
-
     # Fake commands
 
     @commands.command(name='kick')
