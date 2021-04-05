@@ -1,5 +1,4 @@
 import discord
-from discord.ext import commands
 import func_Lu175 as FLU
 import Luby_info
 import asyncio
@@ -10,9 +9,9 @@ def make_time_str(time_sec):
     return str(int(time_sec // 3600)) + '시간 ' + str(int((time_sec % 3600) // 60)) + '분'
 
 
-class StudyRecord(commands.Cog):
-    def __init__(self, bot):
-        self.bot = bot
+class StudyTimer:
+    def __init__(self):
+        self.USER_ID = 0
         self.eeLu175_id = Luby_info.eeLu175_id
         self.Luby_color = Luby_info.Luby_color
         self.Luby_footer = Luby_info.Luby_footer
@@ -23,10 +22,21 @@ class StudyRecord(commands.Cog):
         self.LAP_TIME = []
         self.LAP_TIME_str = []
         self.REF_TIME = None
+        self.TIMER_Emoji_URL = FLU.def_get_emoji_url('23f2', mode=3)
         self.NT_Emoji_URL = FLU.def_get_emoji_url('1f914', mode=3)
         self.T_Emoji_URL = FLU.def_get_emoji_url('667750969592774676', mode=1)
 
-    def make_timerEmbed(self, ctx):
+    def _timer_cmd_help(self, ctx):
+        embed_timer_help = discord.Embed(colour=self.Luby_color, description='**Timer command**')
+        embed_timer_help.set_thumbnail(url=self.TIMER_Emoji_URL)
+        embed_timer_help.add_field(name='START (auto start)', value='`Ti`, `ti`, `공부시작`, `공부하자`', inline=False)
+        embed_timer_help.add_field(name='Lap', value='`L`, `l`, `lap`', inline=False)
+        embed_timer_help.add_field(name='END', value='`D`, `d`, `done`', inline=False)
+        embed_timer_help.set_footer(text=self.Luby_footer)
+        embed_timer_help.set_author(name=ctx.author.display_name, icon_url=ctx.author.avatar_url)
+        return embed_timer_help
+
+    def _make_timerEmbed(self, ctx):
         embed_timer = discord.Embed(colour=self.Luby_color)
         embed_timer.set_thumbnail(url=self.T_Emoji_URL)
         embed_timer.add_field(name='Timer', value=f'{make_time_str(time() - self.REF_TIME)}', inline=False)
@@ -37,7 +47,7 @@ class StudyRecord(commands.Cog):
         embed_timer.set_author(name=ctx.author.display_name, icon_url=ctx.author.avatar_url)
         return embed_timer
 
-    async def timer(self, ctx, LAP=False, RESET=False):
+    async def _timer(self, ctx, LAP=False, RESET=False):
         if LAP:
             self.NOW_STUDY = False
             self.LAP_TIME.insert(0, time())
@@ -51,23 +61,25 @@ class StudyRecord(commands.Cog):
         elif RESET:
             self.LAP_TIME = []
 
-        embed_timer = self.make_timerEmbed(ctx)
+        embed_timer = self._make_timerEmbed(ctx)
         self.showTimerEmbed = await ctx.send(embed=embed_timer)
 
         while self.NOW_STUDY:
             await asyncio.sleep(0.5)
             if (((time() - self.REF_TIME) % 3600) // 60) > 0:
-                embed_timer = self.make_timerEmbed(ctx)
+                embed_timer = self._make_timerEmbed(ctx)
                 await self.showTimerEmbed.edit(embed=embed_timer)
         await self.showTimerEmbed.delete()
 
-    async def record_process(self, ctx):
+    async def _timer_process(self, ctx):
         if not self.NOW_STUDY:
             self.NOW_STUDY = True
             await ctx.send('공부 시작!')
+            embed_timer_help = self._timer_cmd_help(ctx)
+            self.showTimerEmbed = await ctx.send(embed=embed_timer_help)
             self.START_TIME = time()
             self.REF_TIME = self.START_TIME
-            await self.timer(ctx)
+            await self._timer(ctx)
         elif self.NOW_STUDY:
             self.NOW_STUDY = False
             await ctx.send('공부 끝!')
@@ -78,23 +90,21 @@ class StudyRecord(commands.Cog):
             embed_timer_end.set_author(name=ctx.author.display_name, icon_url=ctx.author.avatar_url)
             await ctx.send(embed=embed_timer_end)
 
-    @commands.command(aliases=['TI', 'Ti', 'ti', '공부시작', '공부하자'])
-    async def lets_study(self, ctx):
-        if ctx.author.id == int(self.eeLu175_id):
+    async def _lets_study(self, ctx):
+        self.USER_ID = ctx.author.id
+        if ctx.author.id == self.USER_ID:
             if not self.NOW_STUDY:
-                await self.record_process(ctx)
+                await self._timer_process(ctx)
 
-    @commands.command(aliases=['L', 'l'])
-    async def lap(self, ctx):
-        if ctx.author.id == int(self.eeLu175_id):
+    async def _lap(self, ctx):
+        if ctx.author.id == self.USER_ID:
             if self.NOW_STUDY:
-                await self.timer(ctx, LAP=True)
+                await self._timer(ctx, LAP=True)
 
-    @commands.command(aliases=['D', 'd'])
-    async def done(self, ctx):
-        if ctx.author.id == int(self.eeLu175_id):
+    async def _done(self, ctx):
+        if ctx.author.id == self.USER_ID:
             if self.NOW_STUDY:
-                await self.record_process(ctx)
+                await self._timer_process(ctx)
 
             # RESET
             self.showTimerEmbed = None
@@ -103,7 +113,3 @@ class StudyRecord(commands.Cog):
             self.LAP_TIME = []
             self.LAP_TIME_str = []
             self.REF_TIME = None
-
-
-def setup(bot):
-    bot.add_cog(StudyRecord(bot))
