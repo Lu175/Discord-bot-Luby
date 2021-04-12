@@ -65,7 +65,7 @@ class ShowHelp(commands.Cog):
         await ctx.reply(embed=embed_help, mention_author=True)
 
     @help_group.command(name='admin')
-    async def help_user(self, ctx):
+    async def help_admin(self, ctx):
         embed_help = discord.Embed(title=f"네, {str(ctx.author)[:-5]}님!\n무엇을 도와드릴까요?",
                                    colour=self.Luby_color,
                                    description='admin만 사용 가능한 명령어들 입니다!')
@@ -82,7 +82,7 @@ class ShowHelp(commands.Cog):
         await ctx.reply(embed=embed_help, mention_author=True)
 
     @help_group.command(name='Lu')
-    async def help_user(self, ctx):
+    async def help_lu(self, ctx):
         embed_help = discord.Embed(title=f"네, {str(ctx.author)[:-5]}님!\n무엇을 도와드릴까요?",
                                    colour=self.Luby_color,
                                    description='Lu님만 사용 가능한 명령어들 입니다!')
