@@ -2,6 +2,7 @@
 eeLu175_id = 622467096109908008
 
 # Luby
+Luby_id = 796342455762419712
 Luby_color = 0xAA11CC
 Luby_version = 'v1.0.4-beta'
 Luby_footer = "Luby   | " + Luby_version
