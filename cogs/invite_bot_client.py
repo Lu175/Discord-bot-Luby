@@ -13,7 +13,7 @@ class InviteBotClient(commands.Cog):
     @commands.command(aliases=['join', '초대'])
     async def _join_bot(self, ctx, input_id: int = Luby_info.Luby_id):
         target_bot = self.bot.get_user(input_id)
-        embed_join = discord.Embed(title='URL for invite bot',
+        embed_join = discord.Embed(title='URL for inviting bot',
                                    colour=self.Luby_color)
         embed_join.add_field(name=Luby_info.BLANK,
                              value=f'**{target_bot.name}**'+Luby_info.BLANK+f'[**`Click here`**](https://discord.com/oauth2/authorize?client_id={target_bot.id}&permissions=0&scope=bot)',
