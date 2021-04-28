@@ -9,13 +9,14 @@ import time
 class ReleaseLog(commands.Cog):
     def __init__(self, bot):
         self.bot = bot
-        self.Activity_name = Luby_info.Luby_Activity_name
+
+    def _log_msg(self, message: str):
+        f_log = open(Luby_info.Luby_path + "/Luby_log.out", 'a', encoding='utf-8')
+        f_log.write(f"{message}\n")
+        f_log.close()
 
     @commands.Cog.listener()
     async def on_ready(self):
-        await self.bot.change_presence(activity=discord.Activity(type=discord.ActivityType.listening, name=self.Activity_name),
-                                       status=discord.Status.online,
-                                       afk=False)
         launch_msg = f"############\n" \
                      f"Time: [{time.ctime()}]\n" \
                      f"Logged in as {self.bot.user.name}\n" \
@@ -34,11 +35,6 @@ class ReleaseLog(commands.Cog):
             replied_msg = await FLU.get_replied_msg(bot=self.bot, message=message)
             if replied_msg:
                 self._log_msg('Replied message: ' + replied_msg.content)
-
-    def _log_msg(self, message: str):
-        f_log = open(Luby_info.Luby_path + "/Luby_log.out", 'a', encoding='utf-8')
-        f_log.write(f"{message}\n")
-        f_log.close()
 
 
 def setup(bot):
