@@ -9,7 +9,6 @@ class ReleaseLog(commands.Cog):
         self.bot = bot
         self.Luby_color = Luby_info.Luby_color
         self.Luby_footer = Luby_info.Luby_footer
-        self.Activity_name = Luby_info.Luby_Activity_name
 
     async def send_zoomed_emoji(self, message, Custom_Emoji_id: str, mode=None):
         replied_msg = await FLU.get_replied_msg(bot=self.bot, message=message)
