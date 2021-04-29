@@ -4,7 +4,7 @@ import Luby_info
 import func_Lu175 as FLU
 
 
-class ReleaseLog(commands.Cog):
+class PersonalEmoji(commands.Cog):
     def __init__(self, bot):
         self.bot = bot
         self.Luby_color = Luby_info.Luby_color
@@ -108,8 +108,6 @@ class ReleaseLog(commands.Cog):
                         msg_for_send += '<:JASGO_sad:798218621225795605> '
                     if text == '.':
                         msg_for_send += '<:JASGO_despair:798218659670917151> '
-                    if text == '#':
-                        msg_for_send += '<:JASGO:800032661505572864> '
                 if msg_for_send != '':
                     await message.channel.send(msg_for_send)
 
@@ -129,4 +127,4 @@ class ReleaseLog(commands.Cog):
 
 
 def setup(bot):
-    bot.add_cog(ReleaseLog(bot))
+    bot.add_cog(PersonalEmoji(bot))
