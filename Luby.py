@@ -46,7 +46,7 @@ async def on_message(message):
         return
     else:
         if message.content[:3] == '루님!':
-            await message.channel.send(f'<@!622467096109908008>\n루님!! {message.author.display_name}님이 찾으세요!!', mention_author=True)
+            await message.channel.send(f'<@{eeLu175_id}>\n루님!! {message.author.display_name}님이 찾으세요!!')
 
 
 # Emoji for OmokBoard
