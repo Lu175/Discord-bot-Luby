@@ -29,7 +29,7 @@ class InviteClient(commands.Cog):
             embed_join_bot.set_thumbnail(url=target.avatar_url)
             if input_id == self.Luby_id:
                 embed_join_bot.add_field(name=Luby_info.BLANK,
-                                         value='You can use `./join <bot_id>` command for another bot.\n',
+                                         value='You can use `./join <client_id>` command for another client.',
                                          inline=False)
             embed_join_bot.set_footer(text=self.Luby_footer)
             await ctx.send(embed=embed_join_bot)
