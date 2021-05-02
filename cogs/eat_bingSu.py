@@ -7,6 +7,7 @@ class EatingBingSu(commands.Cog):
     def __init__(self, bot):
         self.bot = bot
         self.play_w_bingSu = True
+        self.bingSu_prefix = 's!'
 
     def is_bingSu_msg(self, message):
         return message.author.id == int(796053822371397642)
@@ -20,7 +21,7 @@ class EatingBingSu(commands.Cog):
             await asyncio.sleep(5)
             await ctx.channel.send('(빙수 가게에 들어간다) 딸랑~(E)')
             await asyncio.sleep(2)
-            await ctx.channel.send('!점장')
+            await ctx.channel.send(self.bingSu_prefix+'점장')
             await self.bot.wait_for('message', check=self.is_bingSu_msg, timeout=TIME_OUT)
             await asyncio.sleep(2)
         except asyncio.TimeoutError:
@@ -34,7 +35,7 @@ class EatingBingSu(commands.Cog):
             try:
                 await ctx.channel.send('음.. 일단 메뉴판 부터!')
                 await asyncio.sleep(2)
-                await ctx.channel.send('!빙수메뉴판')
+                await ctx.channel.send(self.bingSu_prefix+'빙수메뉴판')
                 await self.bot.wait_for('message', check=self.is_bingSu_msg, timeout=TIME_OUT)
                 await asyncio.sleep(2)
             except asyncio.TimeoutError:
@@ -46,7 +47,7 @@ class EatingBingSu(commands.Cog):
                     await asyncio.sleep(2)
                     await ctx.channel.send(':yum: 민초는 못참지 ㅋㅋ')
                     await asyncio.sleep(2)
-                    await ctx.channel.send('!빙수 민트초코설빙')
+                    await ctx.channel.send(self.bingSu_prefix+'빙수 민트초코설빙')
                     await self.bot.wait_for('message', check=self.is_bingSu_msg, timeout=TIME_OUT)
                     await asyncio.sleep(2)
                 except asyncio.TimeoutError:
@@ -56,7 +57,7 @@ class EatingBingSu(commands.Cog):
                     try:
                         await ctx.channel.send('아아.. 찬란한 광채~')
                         await asyncio.sleep(2)
-                        await ctx.channel.send('!주문 민트초코설빙')
+                        await ctx.channel.send(self.bingSu_prefix+'주문 민트초코설빙')
                         await self.bot.wait_for('message', check=self.is_bingSu_msg, timeout=TIME_OUT)
                         await asyncio.sleep(2)
                     except asyncio.TimeoutError:
