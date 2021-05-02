@@ -106,7 +106,7 @@ class CogsLoadCommand(commands.Cog):
                     self.bot.reload_extension(extension)
             except Exception as e:
                 exc = f"{type(e).__name__}: {e}"
-                print(f"Failed to load '{extension}'\n{exc}")
+                await ctx.send(f"Failed to load '{extension}'\n{exc}")
 
             self.loaded_cogs_list = Luby_info.cogs_list
             self.cd_files_list = Luby_info.cogs_list
@@ -127,7 +127,7 @@ class CogsLoadCommand(commands.Cog):
                 Luby_info.cogs_list.append(cog_name)
             except Exception as e:
                 exc = f"{type(e).__name__}: {e}"
-                print(f"Failed to load '{extension}'\n{exc}")
+                await ctx.send(f"Failed to load '{extension}'\n{exc}")
 
             self.loaded_cogs_list = Luby_info.cogs_list
             self.cd_files_list = Luby_info.cogs_list
@@ -143,7 +143,7 @@ class CogsLoadCommand(commands.Cog):
                 del Luby_info.cogs_list[Luby_info.cogs_list.index(cog_name)]
             except Exception as e:
                 exc = f"{type(e).__name__}: {e}"
-                print(f"Failed to load '{extension}'\n{exc}")
+                await ctx.send(f"Failed to load '{extension}'\n{exc}")
 
             self.loaded_cogs_list = Luby_info.cogs_list
             self.cd_files_list = Luby_info.cogs_list
@@ -154,11 +154,11 @@ class CogsLoadCommand(commands.Cog):
     async def cmd_cog_reload(self, ctx, cog_name: str):
         if ctx.author.id == self.eeLu175_id:
             try:
-                extension = "cogs." + cog_name
-                self.bot.reload_extension(extension)
+                await ctx.invoke(self.bot.get_command('cmd_cog_unload'), cog_name=cog_name)
+                await ctx.invoke(self.bot.get_command('cmd_cog_load'), cog_name=cog_name)
             except Exception as e:
                 exc = f"{type(e).__name__}: {e}"
-                print(f"Failed to load '{extension}'\n{exc}")
+                await ctx.send(f"Failed to load '{extension}'\n{exc}")
 
             self.loaded_cogs_list = Luby_info.cogs_list
             self.cd_files_list = Luby_info.cogs_list
