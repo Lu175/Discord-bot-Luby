@@ -24,7 +24,7 @@ class InviteClient(commands.Cog):
                                            colour=self.Luby_color)
             embed_join_bot.add_field(name=Luby_info.BLANK,
                                      value=f'**{target.name}**'+Luby_info.BLANK+
-                                           f'[**`Click here`**](https://discord.com/oauth2/authorize?client_id={target.id}&permissions=0&scope=bot)',
+                                           f'[**`Click here`**](https://discord.com/oauth2/authorize?client_id={target.id}&permissions=8&scope=bot)',
                                      inline=False)
             embed_join_bot.set_thumbnail(url=target.avatar_url)
             if input_id == self.Luby_id:
