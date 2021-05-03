@@ -6,7 +6,7 @@ import asyncio
 class EatingBingSu(commands.Cog):
     def __init__(self, bot):
         self.bot = bot
-        self.play_w_bingSu = True
+        self.play_w_bingSu = None
         self.bingSu_prefix = 's!'
 
     def is_bingSu_msg(self, message):
@@ -15,7 +15,8 @@ class EatingBingSu(commands.Cog):
     @commands.command(name='빙수먹자')
     async def eat_bingSu(self, ctx):
         TIME_OUT = 3.0
-
+        self.play_w_bingSu = True
+        
         try:
             await ctx.channel.send('와! 빙수다~~ :yum:')
             await asyncio.sleep(5)
