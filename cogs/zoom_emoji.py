@@ -21,7 +21,7 @@ class ZoomingEmoji(commands.Cog):
 
             if message.content == ':+1:':
                 embed_Emoji = discord.Embed(colour=self.Luby_color)
-                Emoji_URL = await FLU.get_emoji_url('1f44d', 3)
+                Emoji_URL = FLU.def_get_emoji_url('1f44d', 3)
                 embed_Emoji.set_image(url=Emoji_URL)
                 embed_Emoji.set_footer(text=self.Luby_footer)
                 embed_Emoji.set_author(name=message.author.display_name, icon_url=message.author.avatar_url)
@@ -42,7 +42,7 @@ class ZoomingEmoji(commands.Cog):
                 if A_Custom_Emoji_list[0] == message.content:
                     embed_Emoji = discord.Embed(colour=self.Luby_color)
                     Emoji_id = (A_Custom_Emoji_list[0].split(":")[2])[:-1]
-                    Emoji_URL = await FLU.get_emoji_url(Emoji_id, 1)
+                    Emoji_URL = FLU.def_get_emoji_url(Emoji_id, 1)
                     embed_Emoji.set_image(url=Emoji_URL)
                     embed_Emoji.set_footer(text=self.Luby_footer)
                     embed_Emoji.set_author(name=message.author.display_name, icon_url=message.author.avatar_url)
@@ -63,7 +63,7 @@ class ZoomingEmoji(commands.Cog):
                 if Custom_Emoji_list[0] == message.content:
                     embed_Emoji = discord.Embed(colour=self.Luby_color)
                     Emoji_id = (Custom_Emoji_list[0].split(":")[2])[:-1]
-                    Emoji_URL = await FLU.get_emoji_url(Emoji_id, 2)
+                    Emoji_URL = FLU.def_get_emoji_url(Emoji_id, 2)
                     embed_Emoji.set_image(url=Emoji_URL)
                     embed_Emoji.set_footer(text=self.Luby_footer)
                     embed_Emoji.set_author(name=message.author.display_name, icon_url=message.author.avatar_url)
@@ -104,7 +104,7 @@ class ZoomingEmoji(commands.Cog):
                 if Emoji_for_send in self.unicodeEmoji:
                     # It's available
                     embed_Emoji = discord.Embed(colour=self.Luby_color)
-                    Emoji_URL = await FLU.get_emoji_url(Emoji_for_send, 3)
+                    Emoji_URL = FLU.def_get_emoji_url(Emoji_for_send, 3)
                     embed_Emoji.set_image(url=Emoji_URL)
                     embed_Emoji.set_footer(text=self.Luby_footer)
                     embed_Emoji.set_author(name=message.author.display_name, icon_url=message.author.avatar_url)
