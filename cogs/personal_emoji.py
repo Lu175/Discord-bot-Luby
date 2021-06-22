@@ -2,6 +2,7 @@ import discord
 from discord.ext import commands
 import Luby_info
 import func_Lu175 as FLU
+import client_id as CI
 
 
 class PersonalEmoji(commands.Cog):
@@ -10,11 +11,12 @@ class PersonalEmoji(commands.Cog):
         self.Luby_color = Luby_info.Luby_color
         self.Luby_footer = Luby_info.Luby_footer
 
-    async def send_zoomed_emoji(self, message, Custom_Emoji_id: str, mode=None):
+    async def send_zoomed_emoji(self, message, Custom_Emoji_id:str = None, mode = None, Emoji_URL:str = None):
         replied_msg = await FLU.get_replied_msg(bot=self.bot, message=message)
         # https://cdn.discordapp.com/emojis/<Emoji_id>.png
         embed_Emoji = discord.Embed(colour=self.Luby_color)
-        Emoji_URL = await FLU.get_emoji_url(Custom_Emoji_id, mode=mode)
+        if Emoji_URL is None:
+            Emoji_URL = FLU.def_get_emoji_url(Custom_Emoji_id, mode=mode)
         embed_Emoji.set_image(url=Emoji_URL)
         embed_Emoji.set_footer(text=self.Luby_footer)
         embed_Emoji.set_author(name=message.author.display_name, icon_url=message.author.avatar_url)
@@ -35,12 +37,17 @@ class PersonalEmoji(commands.Cog):
         if message.author == self.bot.user:
             return
         else:
+            if message.content in ['ㄷㅈ', '도지']:
+                await self.send_zoomed_emoji(message, Emoji_URL='https://i-invdn-com.akamaized.net/ico_flags/80x80/v32/dogecoin.png', mode=2)
             if message.content == '코딩해':
                 await self.send_zoomed_emoji(message, '806893600591446017', mode=1)
             if message.content == '??':
                 await self.send_zoomed_emoji(message, '667750969592774676', mode=1)
             if message.content in ('헐', '헉', 'ㄴㅇㄱ', 'ㅇㅁㅇ'):
-                await self.send_zoomed_emoji(message, '810945426801819719', mode=1)
+                if message.author.id == CI.client_id['러리']:
+                    pass
+                else:
+                    await self.send_zoomed_emoji(message, '810945426801819719', mode=1)
 
             if message.content[:2] == '냠냠':
                 await message.channel.send('<:Green_chicken:787024373457747968> <:Green_chicken:787024373457747968> <:Green_chicken:787024373457747968> <:Green_chicken:787024373457747968>')
