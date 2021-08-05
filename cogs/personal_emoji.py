@@ -37,25 +37,26 @@ class PersonalEmoji(commands.Cog):
         if message.author == self.bot.user:
             return
         else:
-            if message.content in ['ㄷㅈ', '도지']:
+            message_str = message.content.replace('\\', '')
+            if message_str in ['ㄷㅈ', '도지']:
                 await self.send_zoomed_emoji(message, Emoji_URL='https://i-invdn-com.akamaized.net/ico_flags/80x80/v32/dogecoin.png', mode=2)
-            if message.content == '코딩해':
+            if message_str == '코딩해':
                 await self.send_zoomed_emoji(message, '806893600591446017', mode=1)
-            if message.content == '??':
+            if message_str == '??':
                 await self.send_zoomed_emoji(message, '667750969592774676', mode=1)
-            if message.content in ('헐', '헉', 'ㄴㅇㄱ', 'ㅇㅁㅇ'):
+            if message_str in ('헐', '헉', 'ㄴㅇㄱ', 'ㅇㅁㅇ'):
                 if message.author.id == CI.client_id['러리']:
                     pass
                 else:
                     await self.send_zoomed_emoji(message, '810945426801819719', mode=1)
 
-            if message.content[:2] == '냠냠':
+            if message_str[:2] == '냠냠':
                 await message.channel.send('<:Green_chicken:787024373457747968> <:Green_chicken:787024373457747968> <:Green_chicken:787024373457747968> <:Green_chicken:787024373457747968>')
 
-            if message.content[:2] == '암고':
+            if message_str[:2] == '암고':
                 # Filtering
                 filtered_msg = ''
-                for char in message.content[2:len(message.content)]:
+                for char in message_str[2:len(message_str)]:
                     if char != ' ':
                         filtered_msg += char
                 # MSG send
