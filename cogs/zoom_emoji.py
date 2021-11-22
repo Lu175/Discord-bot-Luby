@@ -18,7 +18,7 @@ class ZoomingEmoji(commands.Cog):
         if message.author == self.bot.user:
             return
         else:
-            if message.author.id == CI.client_id['에이다']:
+            if message.author.id in [CI.client_id['에이다'], CI.client_id['Abiria']]:
                 pass
             else:
                 replied_msg = await FLU.get_replied_msg(bot=self.bot, message=message)
